@@ -9,14 +9,14 @@ import java.util.List;
 public interface CategoryService {
 
     /**
-     * Método para recuperar todas las categorías
+     * Recuperar todas las categorías
      *
      * @return {@link List} de {@link Category}
      */
     List<Category> findAll();
 
     /**
-     * Método para recuperar una categoria concreta
+     * Recupera una categoria concreta
      *
      * @param id PK de la entidad
      * @throws EntityNotFoundException si no existe la categoría a recuperar
@@ -25,14 +25,14 @@ public interface CategoryService {
     Category findById(Long id) throws EntityNotFoundException;
 
     /**
-     * Método para crear  una categoría
+     * Crea una nueva categoría
      *
      * @param dto datos de la entidad
      */
     void create(CategoryDTO dto);
 
     /**
-     * Método para actualizar una categoría
+     * Actualiza una categoría existente
      *
      * @param dto con los nuevos datos de la entidad incluyendo su id
      * @throws EntityNotFoundException si no existe la categoría a actualizar
@@ -40,7 +40,7 @@ public interface CategoryService {
     void update(CategoryDTO dto) throws EntityNotFoundException;
 
     /**
-     * Método para borrar una categoría
+     * Elimina una categoría
      *
      * @param id PK de la entidad
      * @throws EntityNotFoundException si no existe la categoría a borrar

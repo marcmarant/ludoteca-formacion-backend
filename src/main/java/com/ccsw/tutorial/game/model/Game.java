@@ -4,6 +4,7 @@ import com.ccsw.tutorial.author.model.Author;
 import com.ccsw.tutorial.category.model.Category;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "game")
@@ -15,9 +16,11 @@ public class Game {
     private Long id;
 
     @Column(name = "title", nullable = false)
+    @NotBlank
     private String title;
 
     @Column(name = "age", nullable = false)
+    @NotBlank
     private String age;
 
     @ManyToOne

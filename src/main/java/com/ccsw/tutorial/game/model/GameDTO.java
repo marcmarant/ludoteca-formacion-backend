@@ -2,12 +2,18 @@ package com.ccsw.tutorial.game.model;
 
 import com.ccsw.tutorial.author.model.AuthorDTO;
 import com.ccsw.tutorial.category.model.CategoryDTO;
+import jakarta.validation.constraints.NotBlank;
 
 public class GameDTO {
 
     private Long id;
+
+    @NotBlank(message = "El titulo no puede estar vacío")
     private String title;
+
+    @NotBlank(message = "La edad no puede estar vacía")
     private String age;
+
     private CategoryDTO category;
     private AuthorDTO author;
 
@@ -15,7 +21,6 @@ public class GameDTO {
      * @return id
      */
     public Long getId() {
-
         return this.id;
     }
 
@@ -23,7 +28,6 @@ public class GameDTO {
      * @param id new value of {@link #getId}.
      */
     public void setId(Long id) {
-
         this.id = id;
     }
 
@@ -31,7 +35,6 @@ public class GameDTO {
      * @return title
      */
     public String getTitle() {
-
         return this.title;
     }
 
@@ -39,7 +42,6 @@ public class GameDTO {
      * @param title new value of {@link #getTitle}.
      */
     public void setTitle(String title) {
-
         this.title = title;
     }
 
@@ -47,7 +49,6 @@ public class GameDTO {
      * @return age
      */
     public String getAge() {
-
         return this.age;
     }
 
@@ -55,7 +56,6 @@ public class GameDTO {
      * @param age new value of {@link #getAge}.
      */
     public void setAge(String age) {
-
         this.age = age;
     }
 
@@ -63,7 +63,6 @@ public class GameDTO {
      * @return category
      */
     public CategoryDTO getCategory() {
-
         return this.category;
     }
 
@@ -71,7 +70,6 @@ public class GameDTO {
      * @param category new value of {@link #getCategory}.
      */
     public void setCategory(CategoryDTO category) {
-
         this.category = category;
     }
 
@@ -79,7 +77,6 @@ public class GameDTO {
      * @return author
      */
     public AuthorDTO getAuthor() {
-
         return this.author;
     }
 
@@ -87,7 +84,6 @@ public class GameDTO {
      * @param author new value of {@link #getAuthor}.
      */
     public void setAuthor(AuthorDTO author) {
-
         this.author = author;
     }
 

@@ -2,12 +2,14 @@ package com.ccsw.tutorial.author;
 
 import com.ccsw.tutorial.author.model.Author;
 import com.ccsw.tutorial.author.model.AuthorDTO;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
@@ -25,6 +27,31 @@ public class AuthorTest {
 
     @InjectMocks
     private AuthorServiceImpl authorService;
+
+    public static final Long EXISTS_AUTHOR_ID = 1L;
+    public static final Long NOT_EXISTS_AUTHOR_ID = 0L;
+
+    @Test
+    public void findByIdShouldReturnExpectedAuthor() {
+
+        Author author = mock(Author.class);
+        when(author.getId()).thenReturn(EXISTS_AUTHOR_ID);
+        when(authorRepository.findById(EXISTS_AUTHOR_ID)).thenReturn(Optional.of(author));
+
+        Author authorResponse = authorService.findById(EXISTS_AUTHOR_ID);
+
+        assertNotNull(authorResponse);
+
+        assertEquals(EXISTS_AUTHOR_ID, authorResponse.getId());
+    }
+
+    @Test
+    public void findByNotExistingIdShouldThrowEntityNotFoundException() {
+
+        when(authorRepository.findById(NOT_EXISTS_AUTHOR_ID)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> authorService.findById(NOT_EXISTS_AUTHOR_ID));
+    }
 
     // ESTOS TESTS NO TIENEN SENTIDO
     /*@Test

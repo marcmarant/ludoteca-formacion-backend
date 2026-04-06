@@ -2,6 +2,7 @@ package com.ccsw.tutorial.category;
 
 import com.ccsw.tutorial.category.model.Category;
 import com.ccsw.tutorial.category.model.CategoryDTO;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -24,6 +25,9 @@ public class CategoryTest {
 
     @InjectMocks
     private CategoryServiceImpl categoryService;
+
+    public static final Long EXISTS_CATEGORY_ID = 1L;
+    public static final Long NOT_EXISTS_CATEGORY_ID = 7L;
 
     @Test
     public void findAllShouldReturnAllCategories() {
@@ -49,6 +53,14 @@ public class CategoryTest {
         Category category = categoryService.findById((long) 1);
 
         assertEquals(mockCategory, category);
+    }
+
+    @Test
+    public void findByNotExistingIdShouldThrowEntityNotFoundException() {
+
+        when(categoryRepository.findById(NOT_EXISTS_CATEGORY_ID)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> categoryService.findById(NOT_EXISTS_CATEGORY_ID));
     }
 
     @Test
