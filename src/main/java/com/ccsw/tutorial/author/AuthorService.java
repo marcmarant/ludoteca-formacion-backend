@@ -6,7 +6,16 @@ import com.ccsw.tutorial.author.model.AuthorSearchDTO;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 public interface AuthorService {
+
+    /**
+     * Recupera un listado de autores {@link Author}
+     *
+     * @return {@link List} de {@link Author}
+     */
+    List<Author> findAll();
 
     /**
      * Método para recuperar una pagina de autores

@@ -40,7 +40,19 @@ public class AuthorIT {
     private TestRestTemplate restTemplate;
 
     ParameterizedTypeReference<ResponsePage<AuthorDTO>> pageResponseType = new ParameterizedTypeReference<ResponsePage<AuthorDTO>>(){};
+    ParameterizedTypeReference<List<AuthorDTO>> responseTypeList = new ParameterizedTypeReference<List<AuthorDTO>>(){};
     ParameterizedTypeReference<AuthorDTO> authorResponseType = new ParameterizedTypeReference<AuthorDTO>(){};
+
+    @Test
+    public void findAllShouldReturnAllAuthor() {
+
+        ResponseEntity<List<AuthorDTO>> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.GET, null, responseTypeList);
+
+        assertNotNull(response);
+        assertEquals(TOTAL_AUTHORS, response.getBody().size());
+    }
+
+    // TODO COMPLETE TESTS
 
     /*@Test
     public void findFirstPageWithFiveSizeShouldReturnFirstFiveResults() {

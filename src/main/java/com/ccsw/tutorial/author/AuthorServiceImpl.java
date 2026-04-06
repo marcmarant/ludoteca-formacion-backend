@@ -23,8 +23,16 @@ public class AuthorServiceImpl implements AuthorService {
      * {@inheritDoc}
      */
     @Override
+    public List<Author> findAll() {
+        return (List<Author>) this.authorRepository.findAll();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Page<Author> findPage(AuthorSearchDTO dto) {
-        return (Page<Author>) this.authorRepository.findAll(dto.getPageable().getPageable());
+        return this.authorRepository.findAll(dto.getPageable().getPageable());
     }
 
     /**

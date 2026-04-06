@@ -1,5 +1,6 @@
 package com.ccsw.tutorial.author;
 
+import com.ccsw.tutorial.author.model.Author;
 import com.ccsw.tutorial.author.model.AuthorDTO;
 import com.ccsw.tutorial.author.model.AuthorSearchDTO;
 import com.ccsw.tutorial.common.pagination.PageableRequest;
@@ -11,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Tag(name = "Authors", description = "API of Author")
 @RequestMapping(value = "/authors")
@@ -24,12 +28,18 @@ public class AuthorController {
     @Autowired
     ModelMapper mapper;
 
-    @Operation(summary = "Find Page", description = "Method that returns a page of authors")
+    @Operation(summary = "Find", description = "Method that returns a list of authors. If page params are provided it returns a page of authors.")
     @RequestMapping(path = "", method = RequestMethod.GET)
-    public Page<AuthorDTO> findPage(
-            @RequestParam(defaultValue = "0") int pageNumber,
-            @RequestParam(defaultValue = "5") int pageSize
+    public Object find(
+            @RequestParam(required = false) Integer pageNumber,
+            @RequestParam(required = false) Integer pageSize
     ) {
+        // Si no se pasan parametros de paginación se devuelven todos los autores
+        if (pageNumber == null || pageSize == null) {
+            List<Author> authors = authorService.findAll();
+            return authors.stream().map(e -> mapper.map(e, AuthorDTO.class)).collect(Collectors.toList());
+        }
+
         AuthorSearchDTO dto = new AuthorSearchDTO();
         dto.setPageable(new PageableRequest(pageNumber, pageSize));
 
