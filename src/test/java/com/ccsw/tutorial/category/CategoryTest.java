@@ -48,9 +48,9 @@ public class CategoryTest {
 
         Category mockCategory = mock(Category.class);
 
-        when(categoryRepository.findById((long) 1)).thenReturn(Optional.of(mockCategory));
+        when(categoryRepository.findById(EXISTS_CATEGORY_ID)).thenReturn(Optional.of(mockCategory));
 
-        Category category = categoryService.findById((long) 1);
+        Category category = categoryService.findById(EXISTS_CATEGORY_ID);
 
         assertEquals(mockCategory, category);
     }
@@ -70,7 +70,7 @@ public class CategoryTest {
 
         when(categoryRepository.save(any(Category.class))).thenAnswer(invocation -> {
             Category category = invocation.getArgument(0);
-            category.setId((long) 1); // Simulate the auto-generated ID
+            category.setId(EXISTS_CATEGORY_ID); // Simulate the auto-generated ID
             return category;
         });
 
@@ -82,7 +82,7 @@ public class CategoryTest {
 
         Category savedCategory = categoryCaptor.getValue();
 
-        assertEquals(1, savedCategory.getId());
+        assertEquals(EXISTS_CATEGORY_ID, savedCategory.getId());
         assertEquals(dto.getName(), savedCategory.getName());
     }
 
@@ -108,12 +108,12 @@ public class CategoryTest {
 
         when(categoryRepository.save(any(Category.class))).thenAnswer(invocation -> {
             Category category = invocation.getArgument(0);
-            category.setId((long) 3);
+            category.setId(EXISTS_CATEGORY_ID);
             return category;
         });
 
         CategoryDTO dto = new CategoryDTO();
-        dto.setId((long) 3);
+        dto.setId(EXISTS_CATEGORY_ID);
         dto.setName("Updated Category");
 
         when(categoryRepository.findById(dto.getId())).thenReturn(Optional.of(new Category()));
@@ -133,10 +133,10 @@ public class CategoryTest {
 
         Category mockCategory = mock(Category.class);
 
-        when(categoryRepository.findById((long) 1)).thenReturn(Optional.of(mockCategory));
+        when(categoryRepository.findById(EXISTS_CATEGORY_ID)).thenReturn(Optional.of(mockCategory));
 
-        categoryService.delete((long) 1);
+        categoryService.delete(EXISTS_CATEGORY_ID);
 
-        verify(categoryRepository).deleteById((long) 1);
+        verify(categoryRepository).deleteById(EXISTS_CATEGORY_ID);
     }
 }

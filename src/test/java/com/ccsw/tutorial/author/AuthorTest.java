@@ -2,6 +2,8 @@ package com.ccsw.tutorial.author;
 
 import com.ccsw.tutorial.author.model.Author;
 import com.ccsw.tutorial.author.model.AuthorDTO;
+import com.ccsw.tutorial.author.model.AuthorSearchDTO;
+import com.ccsw.tutorial.common.pagination.PageableRequest;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,8 +11,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +33,37 @@ public class AuthorTest {
 
     public static final Long EXISTS_AUTHOR_ID = 1L;
     public static final Long NOT_EXISTS_AUTHOR_ID = 0L;
+
+    @Test
+    public void findAllShouldReturnAllAuthors() {
+
+        List<Author> list = new ArrayList<>();
+        list.add(mock(Author.class));
+
+        when(authorRepository.findAll()).thenReturn(list);
+
+        List<Author> authors = authorService.findAll();
+
+        assertNotNull(authors);
+        assertEquals(1, authors.size());
+    }
+
+    @Test
+    public void findPageShouldReturnExpectedPage() {
+
+        AuthorSearchDTO dto = new AuthorSearchDTO();
+        dto.setPageable(new PageableRequest(0, 5));
+
+        Page<Author> mockPage = new PageImpl<>(List.of(mock(Author.class)));
+
+        when(authorRepository.findAll(any(Pageable.class))).thenReturn(mockPage);
+
+        Page<Author> page = authorService.findPage(dto);
+
+        assertNotNull(page);
+        assertEquals(1, page.getContent().size());
+        verify(authorRepository).findAll(dto.getPageable().getPageable());
+    }
 
     @Test
     public void findByIdShouldReturnExpectedAuthor() {
@@ -53,105 +87,96 @@ public class AuthorTest {
         assertThrows(EntityNotFoundException.class, () -> authorService.findById(NOT_EXISTS_AUTHOR_ID));
     }
 
-    // ESTOS TESTS NO TIENEN SENTIDO
-    /*@Test
-    public void findPageShouldReturnAPageOfAuthors() {
-
-        Page<Author> mockPage = mock(Page.class);
-
-        when(authorRepository.findAll()).thenReturn(mockPage);
-
-        Page<Author> page = authorService.findPage();
-
-        assertNotNull(page);
-    }*/
-
-    /*@Test
-    public void findByIdShouldReturnExpectedCategory() {
-
-        Category mockCategory = mock(Category.class);
-
-        when(categoryRepository.findById((long) 1)).thenReturn(Optional.of(mockCategory));
-
-        Category category = categoryService.findById((long) 1);
-
-        assertEquals(mockCategory, category);
-    }
-
     @Test
-    public void createShouldCreateAValidCategory() {
+    public void createShouldCreateAnAuthor() {
 
-        ArgumentCaptor<Category> categoryCaptor = ArgumentCaptor.forClass(Category.class);
+        ArgumentCaptor<Author> authorCaptor = ArgumentCaptor.forClass(Author.class);
 
-        when(categoryRepository.save(any(Category.class))).thenAnswer(invocation -> {
-            Category category = invocation.getArgument(0);
-            category.setId((long) 1); // Simulate the auto-generated ID
-            return category;
+        when(authorRepository.save(any(Author.class))).thenAnswer(invocation -> {
+            Author author = invocation.getArgument(0);
+            author.setId(EXISTS_AUTHOR_ID);
+            return author;
         });
 
-        CategoryDTO dto = new CategoryDTO();
-        dto.setName("Test Category");
-        categoryService.create(dto);
+        AuthorDTO dto = new AuthorDTO();
+        dto.setName("Test Author");
+        dto.setNationality("ES");
+        authorService.create(dto);
 
-        verify(categoryRepository).save(categoryCaptor.capture());
+        verify(authorRepository).save(authorCaptor.capture());
 
-        Category savedCategory = categoryCaptor.getValue();
+        Author savedAuthor = authorCaptor.getValue();
 
-        assertEquals(1, savedCategory.getId());
-        assertEquals(dto.getName(), savedCategory.getName());
+        assertEquals(EXISTS_AUTHOR_ID, savedAuthor.getId());
+        assertEquals(dto.getName(), savedAuthor.getName());
+        assertEquals(dto.getNationality(), savedAuthor.getNationality());
     }
 
     @Test
-    public void createShouldDenyAnInvalidCategory() {
+    public void updateShouldReplaceExpectedAuthor() {
 
-        when(categoryRepository.save(argThat(category -> category.getName() == null || category.getName().isBlank())))
-                .thenThrow(new IllegalArgumentException("Name cannot be blank"));
+        ArgumentCaptor<Author> authorCaptor = ArgumentCaptor.forClass(Author.class);
 
-        CategoryDTO dto = new CategoryDTO(); // Invalid name (null)
+        Author existingAuthor = new Author();
+        existingAuthor.setId(EXISTS_AUTHOR_ID);
+        existingAuthor.setName("Old Name");
+        existingAuthor.setNationality("FR");
 
-        assertThrows(IllegalArgumentException.class, () -> categoryService.create(dto));
+        when(authorRepository.findById(EXISTS_AUTHOR_ID)).thenReturn(Optional.of(existingAuthor));
+        when(authorRepository.save(any(Author.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        dto.setName(""); // Invalid name (NotBlank)
+        AuthorDTO dto = new AuthorDTO();
+        dto.setId(EXISTS_AUTHOR_ID);
+        dto.setName("Updated Name");
+        dto.setNationality("ES");
 
-        assertThrows(IllegalArgumentException.class, () -> categoryService.create(dto));
+        authorService.update(dto);
+
+        verify(authorRepository).save(authorCaptor.capture());
+
+        Author savedAuthor = authorCaptor.getValue();
+
+        assertEquals(dto.getId(), savedAuthor.getId());
+        assertEquals(dto.getName(), savedAuthor.getName());
+        assertEquals(dto.getNationality(), savedAuthor.getNationality());
     }
 
     @Test
-    public void updateShouldReplaceACategory() {
+    public void updateNonExistentAuthorShouldThrowEntityNotFoundException() {
 
-        ArgumentCaptor<Category> categoryCaptor = ArgumentCaptor.forClass(Category.class);
+        AuthorDTO dto = new AuthorDTO();
+        dto.setId(NOT_EXISTS_AUTHOR_ID);
+        dto.setName("Updated Name");
+        dto.setNationality("ES");
 
-        when(categoryRepository.save(any(Category.class))).thenAnswer(invocation -> {
-            Category category = invocation.getArgument(0);
-            category.setId((long) 3);
-            return category;
-        });
+        when(authorRepository.findById(NOT_EXISTS_AUTHOR_ID)).thenReturn(Optional.empty());
 
-        CategoryDTO dto = new CategoryDTO();
-        dto.setId((long) 3);
-        dto.setName("Updated Category");
+        assertThrows(EntityNotFoundException.class, () -> authorService.update(dto));
 
-        when(categoryRepository.findById(dto.getId())).thenReturn(Optional.of(new Category()));
-
-        categoryService.update(dto);
-
-        verify(categoryRepository).save(categoryCaptor.capture());
-
-        Category savedCategory = categoryCaptor.getValue();
-
-        assertEquals(dto.getId(), savedCategory.getId());
-        assertEquals(dto.getName(), savedCategory.getName());
+        verify(authorRepository, never()).save(any(Author.class));
     }
 
     @Test
-    public void deleteShouldDeleteExpectedCategory() {
+    public void deleteShouldDeleteExpectedAuthor() {
 
-        Category mockCategory = mock(Category.class);
+        Author mockAuthor = mock(Author.class);
 
-        when(categoryRepository.findById((long) 1)).thenReturn(Optional.of(mockCategory));
+        when(authorRepository.findById(EXISTS_AUTHOR_ID)).thenReturn(Optional.of(mockAuthor));
 
-        categoryService.delete((long) 1);
+        authorService.delete(EXISTS_AUTHOR_ID);
 
-        verify(categoryRepository).deleteById((long) 1);
-    }*/
+        verify(authorRepository).deleteById(EXISTS_AUTHOR_ID);
+    }
+
+    @Test
+    public void deleteNonExistentAuthorShouldThrowEntityNotFoundException() {
+
+        when(authorRepository.findById(NOT_EXISTS_AUTHOR_ID)).thenReturn(Optional.empty());
+
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> authorService.delete(NOT_EXISTS_AUTHOR_ID));
+
+        assertEquals("Author " + NOT_EXISTS_AUTHOR_ID + " not found", exception.getMessage());
+        verify(authorRepository, never()).deleteById(anyLong());
+    }
+
 }
