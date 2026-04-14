@@ -19,3 +19,6 @@ INSERT INTO game(title, age, category_id, author_id) VALUES ('Azul', '8', 3, 5);
 INSERT INTO client(name) VALUES ('Marcos Martinez');
 INSERT INTO client(name) VALUES ('Alvaro Acevedo');
 INSERT INTO client(name) VALUES ('Emilio Dominguez');
+
+-- usuario con hash de ejemplo para la contraseña "admin123"
+INSERT INTO users(username, password_hash) VALUES ('admin1', '$2a$10$wH9v7Vv8Q3kqgQx9y6J9mO5g0YdBzKq1k2xv7jQ8q7F3eK0m6p3hS');
