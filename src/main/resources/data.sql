@@ -20,5 +20,5 @@ INSERT INTO client(name) VALUES ('Marcos Martinez');
 INSERT INTO client(name) VALUES ('Alvaro Acevedo');
 INSERT INTO client(name) VALUES ('Emilio Dominguez');
 
--- usuario con hash de ejemplo para la contraseña "admin123"
-INSERT INTO users(username, password_hash) VALUES ('admin1', '$2a$10$wH9v7Vv8Q3kqgQx9y6J9mO5g0YdBzKq1k2xv7jQ8q7F3eK0m6p3hS');
+-- usuario con hash de ejemplo para la contraseña "admin"
+INSERT INTO users(username, password_hash) VALUES ('admin', '$2a$10$ygR/J4My3fMEKrl2n5ihbuTzuvDxGNCpWR.UxIX4PGV0LM254I.L2');

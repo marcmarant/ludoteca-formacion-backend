@@ -8,7 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 public interface AuthorRepository extends CrudRepository<Author, Long> {
 
     /**
-     * Método para recuperar un listado paginado de {@link Author}
+     * Recupera un listado paginado de {@link Author}
      *
      * @param pageable pageable
      * @return {@link Page} de {@link Author}
