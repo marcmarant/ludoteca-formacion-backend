@@ -2,6 +2,7 @@ package com.ccsw.tutorial.author;
 
 import com.ccsw.tutorial.author.model.AuthorDTO;
 import com.ccsw.tutorial.author.model.AuthorSearchDTO;
+import com.ccsw.tutorial.common.AbstractIT;
 import com.ccsw.tutorial.common.pagination.PageableRequest;
 import com.ccsw.tutorial.config.ResponsePage;
 import org.junit.jupiter.api.Test;
@@ -22,31 +23,29 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class AuthorIT {
+public class AuthorIT extends AbstractIT {
 
-    public static final String LOCALHOST = "http://localhost:";
     public static final String SERVICE_PATH = "/authors";
 
     // Based on java/resources/data.sql
     private static final int TOTAL_AUTHORS = 6;
-    private static final int NON_EXISTENT_ID = 7;
-    private static final int CATEGORY_TO_UPDATE_ID = 2;
+    public static final Long EXISTS_AUTHOR_ID = 1L;
+    public static final Long NOT_EXISTS_AUTHOR_ID = 0L;
     private static final int PAGE_SIZE = 5;
 
-    @LocalServerPort
-    private int port;
-
-    @Autowired
-    private TestRestTemplate restTemplate;
-
     ParameterizedTypeReference<ResponsePage<AuthorDTO>> pageResponseType = new ParameterizedTypeReference<ResponsePage<AuthorDTO>>(){};
-    ParameterizedTypeReference<List<AuthorDTO>> responseTypeList = new ParameterizedTypeReference<List<AuthorDTO>>(){};
-    ParameterizedTypeReference<AuthorDTO> authorResponseType = new ParameterizedTypeReference<AuthorDTO>(){};
+    ParameterizedTypeReference<List<AuthorDTO>> listResponseType = new ParameterizedTypeReference<List<AuthorDTO>>(){};
+    ParameterizedTypeReference<AuthorDTO> entityResponseType = new ParameterizedTypeReference<AuthorDTO>(){};
 
     @Test
     public void findAllShouldReturnAllAuthor() {
 
-        ResponseEntity<List<AuthorDTO>> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.GET, null, responseTypeList);
+        ResponseEntity<List<AuthorDTO>> response = restTemplate.exchange(
+                LOCALHOST + port + SERVICE_PATH,
+                HttpMethod.GET,
+                null,
+                listResponseType
+        );
 
         assertNotNull(response);
         assertEquals(TOTAL_AUTHORS, response.getBody().size());
@@ -82,5 +81,33 @@ public class AuthorIT {
         assertEquals(TOTAL_AUTHORS, response.getBody().getTotalElements());
         assertEquals(elementsCount, response.getBody().getContent().size());
     }*/
+
+    @Test
+    public void deleteNonExistentAuthorShouldReturnNotFoundException() {
+
+        ResponseEntity<?> response = restTemplate.exchange(
+                LOCALHOST + port + SERVICE_PATH + "/" + NOT_EXISTS_AUTHOR_ID,
+                HttpMethod.DELETE,
+                buildAuthEntity(),
+                Void.class
+        );
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void deleteReferencedAuthorShouldReturnDeleteEntityConflictException() {
+
+        ResponseEntity<?> response = restTemplate.exchange(
+                LOCALHOST + port + SERVICE_PATH + "/" + EXISTS_AUTHOR_ID,
+                HttpMethod.DELETE,
+                buildAuthEntity(),
+                Void.class
+        );
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+    }
 
 }
