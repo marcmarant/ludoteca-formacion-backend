@@ -42,9 +42,13 @@ public abstract class AbstractIT {
         return response.getBody();
     }
 
-    protected HttpEntity<?> buildAuthEntity() {
+    protected <T> HttpEntity<T> buildAuthEntity(T body) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(getAuthToken());
-        return new HttpEntity<>(headers);
+        return new HttpEntity<>(body, headers);
+    }
+
+    protected HttpEntity<?> buildAuthEntity() {
+        return buildAuthEntity(null);
     }
 }
