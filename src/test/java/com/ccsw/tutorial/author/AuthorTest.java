@@ -3,7 +3,9 @@ package com.ccsw.tutorial.author;
 import com.ccsw.tutorial.author.model.Author;
 import com.ccsw.tutorial.author.model.AuthorDTO;
 import com.ccsw.tutorial.author.model.AuthorSearchDTO;
+import com.ccsw.tutorial.common.exception.DeleteEntityConflictException;
 import com.ccsw.tutorial.common.pagination.PageableRequest;
+import com.ccsw.tutorial.game.GameRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +29,9 @@ public class AuthorTest {
 
     @Mock
     private AuthorRepository authorRepository;
+
+    @Mock
+    private GameRepository gameRepository;
 
     @InjectMocks
     private AuthorServiceImpl authorService;
@@ -163,6 +168,8 @@ public class AuthorTest {
 
         when(authorRepository.findById(EXISTS_AUTHOR_ID)).thenReturn(Optional.of(mockAuthor));
 
+        when(gameRepository.existsByAuthor_Id(EXISTS_AUTHOR_ID)).thenReturn(false);
+
         authorService.delete(EXISTS_AUTHOR_ID);
 
         verify(authorRepository).deleteById(EXISTS_AUTHOR_ID);
@@ -179,4 +186,16 @@ public class AuthorTest {
         verify(authorRepository, never()).deleteById(anyLong());
     }
 
+    @Test
+    public void deleteReferencedAuthorShouldThrowDeleteEntityConflictException() {
+
+        Author mockAuthor = mock(Author.class);
+
+        when(authorRepository.findById(EXISTS_AUTHOR_ID)).thenReturn(Optional.of(mockAuthor));
+
+        when(gameRepository.existsByAuthor_Id(EXISTS_AUTHOR_ID)).thenReturn(true);
+
+        assertThrows(DeleteEntityConflictException.class, () -> authorService.delete(EXISTS_AUTHOR_ID));
+        verify(authorRepository, never()).deleteById(anyLong());
+    }
 }

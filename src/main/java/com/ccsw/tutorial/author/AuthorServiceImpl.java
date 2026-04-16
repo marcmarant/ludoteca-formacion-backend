@@ -3,6 +3,8 @@ package com.ccsw.tutorial.author;
 import com.ccsw.tutorial.author.model.Author;
 import com.ccsw.tutorial.author.model.AuthorDTO;
 import com.ccsw.tutorial.author.model.AuthorSearchDTO;
+import com.ccsw.tutorial.common.exception.DeleteEntityConflictException;
+import com.ccsw.tutorial.game.GameRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,9 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Autowired
     AuthorRepository authorRepository;
+
+    @Autowired
+    GameRepository gameRepository;
 
     /**
      * {@inheritDoc}
@@ -85,8 +90,12 @@ public class AuthorServiceImpl implements AuthorService {
      */
     @Override
     public void delete(Long id) throws EntityNotFoundException {
+
         if (this.authorRepository.findById(id).orElse(null) == null) {
-            throw new EntityNotFoundException("Author " + id.toString() + " not found");
+            throw new EntityNotFoundException("Author " + id + " not found");
+        }
+        if (this.gameRepository.existsByAuthor_Id(id)) {
+            throw new DeleteEntityConflictException("Cannot delete author " + id + " because it is referenced by a game");
         }
         this.authorRepository.deleteById(id);
     }

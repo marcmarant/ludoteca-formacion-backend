@@ -3,6 +3,7 @@ package com.ccsw.tutorial.author;
 import com.ccsw.tutorial.author.model.Author;
 import com.ccsw.tutorial.author.model.AuthorDTO;
 import com.ccsw.tutorial.author.model.AuthorSearchDTO;
+import com.ccsw.tutorial.common.exception.DeleteEntityConflictException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 
@@ -18,14 +19,14 @@ public interface AuthorService {
     List<Author> findAll();
 
     /**
-     * Método para recuperar una pagina de autores
+     * Recupera una página de autores
      *
      * @return {@link Page} de {@link Author}
      */
     Page<Author> findPage(AuthorSearchDTO dto);
 
     /**
-     * Método para recuperar un autor concreta
+     * Recupera un autor en concreto
      *
      * @param id PK de la entidad
      * @throws EntityNotFoundException si no existe el autor a recuperar
@@ -34,14 +35,14 @@ public interface AuthorService {
     Author findById(Long id) throws EntityNotFoundException;
 
     /**
-     * Método para crear  un autor
+     * Crea un nuevo autor
      *
      * @param dto datos de la entidad
      */
     void create(AuthorDTO dto);
 
     /**
-     * Método para actualizar un autor
+     * Actualiza un autor existente
      *
      * @param dto con los nuevos datos de la entidad incluyendo su id
      * @throws EntityNotFoundException si no existe el autor a actualizar
@@ -49,11 +50,12 @@ public interface AuthorService {
     void update(AuthorDTO dto) throws EntityNotFoundException;
 
     /**
-     * Método para borrar un autor
+     * Elimina un autor existente
      *
      * @param id PK de la entidad
      * @throws EntityNotFoundException si no existe el autor a borrar
+     * @throws DeleteEntityConflictException si existe un juego asociado a este autor
      */
-    void delete(Long id) throws EntityNotFoundException;
+    void delete(Long id) throws EntityNotFoundException, DeleteEntityConflictException;
 
 }
