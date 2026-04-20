@@ -20,5 +20,11 @@ INSERT INTO client(name) VALUES ('Marcos Martinez');
 INSERT INTO client(name) VALUES ('Alvaro Acevedo');
 INSERT INTO client(name) VALUES ('Emilio Dominguez');
 
+INSERT INTO loan(loan_date, return_date, game_id, client_id) VALUES ('2026-04-10', '2026-04-20', 1, 1);
+INSERT INTO loan(loan_date, return_date, game_id, client_id) VALUES ('2026-04-12', '2026-04-22', 2, 1);
+INSERT INTO loan(loan_date, return_date, game_id, client_id) VALUES ('2026-04-15', '2026-04-25', 3, 2);
+INSERT INTO loan(loan_date, return_date, game_id, client_id) VALUES ('2026-04-15', '2026-04-25', 4, 2);
+INSERT INTO loan(loan_date, return_date, game_id, client_id) VALUES ('2026-04-20', '2026-04-30', 1, 2);
+
 -- usuario con hash de ejemplo para la contraseña "admin"
 INSERT INTO users(username, password_hash) VALUES ('admin', '$2a$10$ygR/J4My3fMEKrl2n5ihbuTzuvDxGNCpWR.UxIX4PGV0LM254I.L2');

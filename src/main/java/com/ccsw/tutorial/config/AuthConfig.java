@@ -40,6 +40,7 @@ public class AuthConfig {
                         .requestMatchers(HttpMethod.GET, "/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/authors/search", "/authors/search/").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/loans/search", "/loans/search/").permitAll()
 
                         // rutas protegidas
                         .requestMatchers(HttpMethod.POST, "/**").authenticated()

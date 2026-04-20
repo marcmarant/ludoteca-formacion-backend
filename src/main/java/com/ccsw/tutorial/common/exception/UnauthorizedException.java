@@ -1,7 +1,7 @@
 package com.ccsw.tutorial.common.exception;
 
 /**
- * Excepción para manejar el acceso a metodos donde el usuario no esta autenticado y el metodo lo requiere
+ * Excepción para manejar el intento de prestamo de un juego que ya se encuentra prestado en ese periodo
  */
 public class UnauthorizedException extends RuntimeException {
     public UnauthorizedException(String message) {

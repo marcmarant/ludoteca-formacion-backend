@@ -21,6 +21,7 @@ public interface AuthorService {
     /**
      * Recupera una página de autores
      *
+     * @param dto filtros y paginación
      * @return {@link Page} de {@link Author}
      */
     Page<Author> findPage(AuthorSearchDTO dto);
