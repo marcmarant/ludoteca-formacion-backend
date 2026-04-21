@@ -2,7 +2,7 @@ package com.ccsw.tutorial.loan.model;
 
 import com.ccsw.tutorial.client.model.ClientDTO;
 import com.ccsw.tutorial.game.model.GameDTO;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
@@ -10,16 +10,16 @@ public class LoanDTO {
 
 	private Long id;
 
-	@NotBlank(message = "La fecha de prestamo no puede estar vacia")
+	@NotNull(message = "La fecha de prestamo no puede estar vacia")
 	private LocalDate loanDate;
 
-    @NotBlank(message = "La fecha de devolucion no puede estar vacia")
+    @NotNull(message = "La fecha de devolucion no puede estar vacia")
 	private LocalDate returnDate;
 
-    @NotBlank(message = "El juego no puede estar vacia")
+    @NotNull(message = "El juego no puede estar vacia")
 	private GameDTO game;
 
-    @NotBlank(message = "El cliente no puede estar vacia")
+    @NotNull(message = "El cliente no puede estar vacia")
 	private ClientDTO client;
 
 	/**

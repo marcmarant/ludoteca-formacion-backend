@@ -4,6 +4,7 @@ import com.ccsw.tutorial.client.model.Client;
 import com.ccsw.tutorial.game.model.Game;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
@@ -17,11 +18,11 @@ public class Loan {
     private Long id;
 
     @Column(name = "loan_date", nullable = false)
-    @NotBlank
+    @NotNull
     private LocalDate loanDate;
 
     @Column(name = "return_date", nullable = false)
-    @NotBlank
+    @NotNull
     private LocalDate returnDate;
 
     @ManyToOne
