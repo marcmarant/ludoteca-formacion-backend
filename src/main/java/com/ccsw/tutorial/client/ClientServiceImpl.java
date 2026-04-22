@@ -53,7 +53,7 @@ public class ClientServiceImpl implements ClientService {
             throw new EntityNotFoundException();
         }
         if (this.clientRepository.existsByNameAndIdNot(dto.getName(), dto.getId())) {
-            throw new IllegalArgumentException("Client name: " + dto.getName() + " already exists");
+            throw new IllegalArgumentException("El nombre de cliente: " + dto.getName() + " ya existe");
         }
         Client client = optClient.get();
         client.setName(dto.getName());
@@ -68,7 +68,7 @@ public class ClientServiceImpl implements ClientService {
     public void delete(Long id) throws EntityNotFoundException {
 
         if (this.clientRepository.findById(id).orElse(null) == null) {
-            throw new EntityNotFoundException("Client " + id.toString() + " not found");
+            throw new EntityNotFoundException("Cliente " + id.toString() + " no encontrado");
         }
         this.clientRepository.deleteById(id);
     }

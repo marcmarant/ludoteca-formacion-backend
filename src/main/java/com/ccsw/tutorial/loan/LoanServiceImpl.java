@@ -45,10 +45,10 @@ public class LoanServiceImpl implements LoanService {
         BeanUtils.copyProperties(dto, loan, "id", "game", "client");
 
         loan.setGame(this.gameRepository.findById(dto.getGame().getId()).orElseThrow(
-                () -> new EntityNotFoundException("Game " + loan.getGame().getId() + " not found")
+                () -> new EntityNotFoundException("Juego " + loan.getGame().getId() + " no encntrado")
         ));
         loan.setClient(this.clientRepository.findById(dto.getClient().getId()).orElseThrow(
-                () -> new EntityNotFoundException("Client " + loan.getClient().getId() + " not found")
+                () -> new EntityNotFoundException("Cliente " + loan.getClient().getId() + " no encontrado")
         ));
         if (this.loanRepository.existsByGameIdAndLoanDateLessThanEqualAndReturnDateGreaterThanEqual(
                 loan.getGame().getId(),
@@ -65,16 +65,16 @@ public class LoanServiceImpl implements LoanService {
     public void update(LoanDTO dto) throws EntityNotFoundException {
 
         Loan loan = this.loanRepository.findById(dto.getId()).orElseThrow(
-                () -> new EntityNotFoundException("Loan " + dto.getId() + " not found")
+                () -> new EntityNotFoundException("Préstamo " + dto.getId() + " no encontrado")
         );
 
         BeanUtils.copyProperties(dto, loan,"game", "client");
 
         loan.setGame(this.gameRepository.findById(dto.getGame().getId()).orElseThrow(
-                () -> new EntityNotFoundException("Game " + loan.getGame().getId() + " not found")
+                () -> new EntityNotFoundException("Juego " + loan.getGame().getId() + " no encontrado")
         ));
         loan.setClient(this.clientRepository.findById(dto.getClient().getId()).orElseThrow(
-                () -> new EntityNotFoundException("Client " + loan.getClient().getId() + " not found")
+                () -> new EntityNotFoundException("Cliente " + loan.getClient().getId() + " no encontrado")
         ));
         if (this.loanRepository.existsByGameIdAndIdNotAndLoanDateLessThanEqualAndReturnDateGreaterThanEqual(
                 loan.getGame().getId(),
@@ -92,7 +92,7 @@ public class LoanServiceImpl implements LoanService {
     public void delete(Long id) throws EntityNotFoundException {
 
         if (this.loanRepository.findById(id).isEmpty()) {
-            throw new EntityNotFoundException("Loan " + id + " not found");
+            throw new EntityNotFoundException("Préstamo " + id + " no encontrado");
         }
         this.loanRepository.deleteById(id);
     }

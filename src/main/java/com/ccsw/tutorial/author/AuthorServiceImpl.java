@@ -92,10 +92,10 @@ public class AuthorServiceImpl implements AuthorService {
     public void delete(Long id) throws EntityNotFoundException {
 
         if (this.authorRepository.findById(id).orElse(null) == null) {
-            throw new EntityNotFoundException("Author " + id + " not found");
+            throw new EntityNotFoundException("Autor " + id + " no encontrado");
         }
         if (this.gameRepository.existsByAuthor_Id(id)) {
-            throw new DeleteEntityConflictException("Cannot delete author " + id + " because it is referenced by a game");
+            throw new DeleteEntityConflictException("No se puede borrar el autor " + id + " porque esta asociado a un juego");
         }
         this.authorRepository.deleteById(id);
     }
