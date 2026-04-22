@@ -1,5 +1,6 @@
 package com.ccsw.tutorial.game;
 
+import com.ccsw.tutorial.common.exception.DeleteEntityConflictException;
 import com.ccsw.tutorial.game.model.Game;
 import com.ccsw.tutorial.game.model.GameDTO;
 import jakarta.persistence.EntityNotFoundException;

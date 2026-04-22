@@ -2,6 +2,7 @@ package com.ccsw.tutorial.category;
 
 import com.ccsw.tutorial.category.model.Category;
 import com.ccsw.tutorial.category.model.CategoryDTO;
+import com.ccsw.tutorial.common.exception.DeleteEntityConflictException;
 import jakarta.persistence.EntityNotFoundException;
 
 import java.util.List;
@@ -44,6 +45,7 @@ public interface CategoryService {
      *
      * @param id PK de la entidad
      * @throws EntityNotFoundException si no existe la categoría a borrar
+     * @throws DeleteEntityConflictException si existe una categoria asociada a este juego
      */
     void delete(Long id) throws EntityNotFoundException;
 

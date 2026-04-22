@@ -2,6 +2,8 @@ package com.ccsw.tutorial.client;
 
 import com.ccsw.tutorial.client.model.Client;
 import com.ccsw.tutorial.client.model.ClientDTO;
+import com.ccsw.tutorial.common.exception.DeleteEntityConflictException;
+import com.ccsw.tutorial.loan.LoanRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ public class ClientServiceImpl implements ClientService {
 
     @Autowired
     ClientRepository clientRepository;
+
+    @Autowired
+    LoanRepository loanRepository;
 
     /**
      * {@inheritDoc}
@@ -69,6 +74,9 @@ public class ClientServiceImpl implements ClientService {
 
         if (this.clientRepository.findById(id).orElse(null) == null) {
             throw new EntityNotFoundException("Cliente " + id.toString() + " no encontrado");
+        }
+        if (this.loanRepository.existsByClient_Id(id)) {
+            throw new DeleteEntityConflictException("No se puede borrar el cliente " + id + " porque esta asociado a un préstamo");
         }
         this.clientRepository.deleteById(id);
     }

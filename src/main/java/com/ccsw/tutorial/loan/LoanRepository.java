@@ -23,6 +23,14 @@ public interface LoanRepository extends CrudRepository<Loan, Long>, JpaSpecifica
 	@EntityGraph(attributePaths = {"game", "client"})
 	Page<Loan> findAll(Specification<Loan> spec, Pageable pageable);
 
+    /**
+     * Devuelve si existe algun préstamo asociado a un cliente en concreto
+     *
+     * @param clientId id del cliente
+     * @return true si existe algun préstamo asociado al cliente, false en caso contrario
+     */
+    boolean existsByClient_Id(Long clientId);
+
 	/**
 	 * Deevuelve si existe un prestamo del juego indicado en el intervalo de fechas indicado
 	 *

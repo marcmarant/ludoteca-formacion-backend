@@ -22,6 +22,14 @@ public interface GameRepository extends CrudRepository<Game, Long>, JpaSpecifica
     List<Game> findAll(Specification<Game> spec);
 
     /**
+     * Devuelve si existe algun juego asociado a una categoria en concreto
+     *
+     * @param categoryId id de la categoria
+     * @return true si existe algun juego asociado a la categoria, false en caso contrario
+     */
+    boolean existsByCategory_Id(Long categoryId);
+
+    /**
      * Devuelve si existe algun juego asociado a un autor concreto
      *
      * @param authorId id del autor

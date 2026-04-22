@@ -2,6 +2,7 @@ package com.ccsw.tutorial.client;
 
 import com.ccsw.tutorial.client.model.ClientDTO;
 import com.ccsw.tutorial.client.model.Client;
+import com.ccsw.tutorial.common.exception.DeleteEntityConflictException;
 import jakarta.persistence.EntityNotFoundException;
 
 import java.util.List;
@@ -37,6 +38,7 @@ public interface ClientService {
      *
      * @param id PK de la entidad
      * @throws EntityNotFoundException si no existe el cliente a eliminar
+     * @throws DeleteEntityConflictException si existe un préstamo asociado a este cliente
      */
     void delete(Long id) throws EntityNotFoundException;
 

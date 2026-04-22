@@ -2,6 +2,8 @@ package com.ccsw.tutorial.category;
 
 import com.ccsw.tutorial.category.model.Category;
 import com.ccsw.tutorial.category.model.CategoryDTO;
+import com.ccsw.tutorial.common.exception.DeleteEntityConflictException;
+import com.ccsw.tutorial.game.GameRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     CategoryRepository categoryRepository;
+
+    @Autowired
+    GameRepository gameRepository;
 
     /**
      * {@inheritDoc}
@@ -75,6 +80,9 @@ public class CategoryServiceImpl implements CategoryService {
     public void delete(Long id) throws EntityNotFoundException {
         if (this.categoryRepository.findById(id).orElse(null) == null) {
             throw new EntityNotFoundException("Categoria " + id.toString() + " no econtrada");
+        }
+        if (this.gameRepository.existsByCategory_Id(id)) {
+            throw new DeleteEntityConflictException("No se puede borrar la categoria " + id + " porque esta asociado a un juego");
         }
         this.categoryRepository.deleteById(id);
     }
