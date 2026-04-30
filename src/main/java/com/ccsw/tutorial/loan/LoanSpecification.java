@@ -27,7 +27,10 @@ public class LoanSpecification implements Specification<Loan> {
         if (criteria.getOperation().equalsIgnoreCase(":") && criteria.getValue() != null) {
             Path<?> path = getPath(root);
             if (path.getJavaType() == String.class) {
-                return builder.like(path.as(String.class), "%" + criteria.getValue() + "%");
+                return builder.like(
+                        builder.upper(path.as(String.class)),
+                        "%" + criteria.getValue().toString().toUpperCase() + "%"
+                );
             }
             return builder.equal(path, criteria.getValue());
         }
