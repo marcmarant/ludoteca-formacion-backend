@@ -21,6 +21,7 @@ public interface LoanService {
      * Crea un nuevo prestamo
      *
      * @param dto datos del prestamo
+     * @throws IllegalArgumentException si la fecha de retorno es anterior o a la de préstamo
      * @throws EntityNotFoundException si no existe el juego o el cliente
      * @throws GameNotAvailableToLoanException si el juego no esta disponible para ser prestado
      */
@@ -30,6 +31,7 @@ public interface LoanService {
      * Actualiza un prestamo existente
      *
      * @param dto datos del prestamo incluyendo id
+     * @throws IllegalArgumentException si la fecha de retorno es anterior o a la de préstamo
      * @throws EntityNotFoundException si no existe el prestamo, juego o cliente
      * @throws GameNotAvailableToLoanException si el juego no esta disponible para ser prestado
      */

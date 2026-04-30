@@ -2,6 +2,7 @@ package com.ccsw.tutorial.loan;
 
 import com.ccsw.tutorial.client.ClientRepository;
 import com.ccsw.tutorial.common.criteria.SearchCriteria;
+import com.ccsw.tutorial.common.exception.GameNotAvailableToLoanException;
 import com.ccsw.tutorial.game.GameRepository;
 import com.ccsw.tutorial.loan.model.Loan;
 import com.ccsw.tutorial.loan.model.LoanDTO;
@@ -39,7 +40,12 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
-    public void create(LoanDTO dto) throws EntityNotFoundException {
+    public void create(LoanDTO dto) throws IllegalArgumentException, EntityNotFoundException, GameNotAvailableToLoanException {
+
+        if (dto.getLoanDate().isAfter(dto.getReturnDate())) {
+            throw new IllegalArgumentException("La fecha de retorno no puede ser anterior a la fecha de préstamo");
+        }
+
         Loan loan = new Loan();
 
         BeanUtils.copyProperties(dto, loan, "id", "game", "client");
@@ -53,16 +59,20 @@ public class LoanServiceImpl implements LoanService {
         if (this.loanRepository.existsByGameIdAndLoanDateLessThanEqualAndReturnDateGreaterThanEqual(
                 loan.getGame().getId(),
                 loan.getReturnDate(),
-                loan.getLoanDate())
-        ) {
-            throw new IllegalArgumentException("El juego no está disponible en el intervalo de fechas indicado");
+                loan.getLoanDate()
+        )) {
+            throw new GameNotAvailableToLoanException("El juego no está disponible en el intervalo de fechas indicado");
         }
 
         this.loanRepository.save(loan);
     }
 
     @Override
-    public void update(LoanDTO dto) throws EntityNotFoundException {
+    public void update(LoanDTO dto) throws IllegalArgumentException, EntityNotFoundException, GameNotAvailableToLoanException {
+
+        if (dto.getLoanDate().isAfter(dto.getReturnDate())) {
+            throw new IllegalArgumentException("La fecha de retorno no puede ser anterior a la fecha de préstamo");
+        }
 
         Loan loan = this.loanRepository.findById(dto.getId()).orElseThrow(
                 () -> new EntityNotFoundException("Préstamo " + dto.getId() + " no encontrado")
@@ -80,9 +90,9 @@ public class LoanServiceImpl implements LoanService {
                 loan.getGame().getId(),
                 loan.getId(),
                 loan.getReturnDate(),
-                loan.getLoanDate())
-        ) {
-            throw new IllegalArgumentException("El juego no está disponible en el intervalo de fechas indicado");
+                loan.getLoanDate()
+        )) {
+            throw new GameNotAvailableToLoanException("El juego no está disponible en el intervalo de fechas indicado");
         }
 
         this.loanRepository.save(loan);
