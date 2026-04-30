@@ -31,15 +31,37 @@ public interface LoanRepository extends CrudRepository<Loan, Long>, JpaSpecifica
      */
     boolean existsByClient_Id(Long clientId);
 
+    /**
+     * Deevuelve si existe un prestamo del cliente indicado en el intervalo de fechas indicado
+     *
+     * @param clientId id del cliente
+     * @param loanDate fecha de prestamo
+     * @param returnDate fecha de devolucion
+     * @return true si existe algun solapamiento, false en caso contrario
+     */
+    boolean existsByClientIdAndLoanDateLessThanEqualAndReturnDateGreaterThanEqual(Long clientId, LocalDate returnDate, LocalDate loanDate);
+
+    /**
+     * Deevuelve si existe otro prestamo del cliente indicado en el intervalo de fechas indicado,
+     * excluyendo el prestamo actual por id
+     *
+     * @param clientId id del cliente
+     * @param id id del prestamo a excluir
+     * @param loanDate fecha de prestamo
+     * @param returnDate fecha de devolucion
+     * @return true si existe algun solapamiento, false en caso contrario
+     */
+    boolean existsByClientIdAndIdNotAndLoanDateLessThanEqualAndReturnDateGreaterThanEqual(Long clientId, Long id, LocalDate returnDate, LocalDate loanDate);
+
 	/**
-	 * Deevuelve si existe un prestamo del juego indicado en el intervalo de fechas indicado
+	 * Devuelve si existe un prestamo del juego indicado en el intervalo de fechas indicado
 	 *
 	 * @param gameId id del juego
 	 * @param loanDate fecha de prestamo
 	 * @param returnDate fecha de devolucion
 	 * @return true si existe algun solapamiento, false en caso contrario
 	 */
-	boolean existsByGameIdAndLoanDateLessThanEqualAndReturnDateGreaterThanEqual(Long gameId, LocalDate loanDate, LocalDate returnDate);
+	boolean existsByGameIdAndLoanDateLessThanEqualAndReturnDateGreaterThanEqual(Long gameId, LocalDate returnDate, LocalDate loanDate);
 
 	/**
 	 * Deevuelve si existe otro prestamo del juego indicado en el intervalo de fechas indicado,
@@ -51,5 +73,5 @@ public interface LoanRepository extends CrudRepository<Loan, Long>, JpaSpecifica
 	 * @param returnDate fecha de devolucion
 	 * @return true si existe algun solapamiento, false en caso contrario
 	 */
-	boolean existsByGameIdAndIdNotAndLoanDateLessThanEqualAndReturnDateGreaterThanEqual(Long gameId, Long id, LocalDate loanDate, LocalDate returnDate);
+	boolean existsByGameIdAndIdNotAndLoanDateLessThanEqualAndReturnDateGreaterThanEqual(Long gameId, Long id, LocalDate returnDate, LocalDate loanDate);
 }

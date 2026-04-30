@@ -42,8 +42,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleDeleteEntityConflict(DeleteEntityConflictException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
+
     @ExceptionHandler(GameNotAvailableToLoanException.class)
     public ResponseEntity<String> handleGameNotAvailableToLoan(GameNotAvailableToLoanException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(ClientAlreadyHasALoanException.class)
+    public ResponseEntity<String> handleClientAlreadyHasALoan(ClientAlreadyHasALoanException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
