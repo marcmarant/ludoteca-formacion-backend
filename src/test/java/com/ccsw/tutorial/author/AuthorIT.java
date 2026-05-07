@@ -24,11 +24,11 @@ public class AuthorIT extends AbstractIT {
 
     public static final String SERVICE_PATH = "/authors";
 
-    // Based on java/resources/data.sql
+    // Basado en java/resources/data.sql
     private static final int TOTAL_AUTHORS = 6;
-    public static final Long GAME_REFERENCED_AUTHOR_ID = 1L;
-    public static final Long NOT_REFERENCED_AUTHOR_ID = 6L;
-    public static final Long NOT_EXISTS_AUTHOR_ID = 0L;
+    private static final Long GAME_REFERENCED_AUTHOR_ID = 1L;
+    private static final Long NOT_REFERENCED_AUTHOR_ID = 6L;
+    private static final Long NOT_EXISTS_AUTHOR_ID = 0L;
     private static final int PAGE_SIZE = 5;
 
     ParameterizedTypeReference<ResponsePage<AuthorDTO>> pageResponseType = new ParameterizedTypeReference<ResponsePage<AuthorDTO>>() {};
@@ -46,6 +46,8 @@ public class AuthorIT extends AbstractIT {
         );
 
         assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
         assertEquals(TOTAL_AUTHORS, response.getBody().size());
     }
 

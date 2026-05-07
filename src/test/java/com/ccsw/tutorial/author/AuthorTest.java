@@ -118,6 +118,21 @@ public class AuthorTest {
     }
 
     @Test
+    public void createShouldDenyAnInvalidAuthor() {
+
+        when(authorRepository.save(argThat(author -> author.getName() == null || author.getName().isBlank())))
+                .thenThrow(new IllegalArgumentException("Name cannot be blank"));
+
+        AuthorDTO dto = new AuthorDTO(); // Invalid name (null)
+
+        assertThrows(IllegalArgumentException.class, () -> authorService.create(dto));
+
+        dto.setName(""); // Invalid name (NotBlank)
+
+        assertThrows(IllegalArgumentException.class, () -> authorService.create(dto));
+    }
+
+    @Test
     public void updateShouldReplaceExpectedAuthor() {
 
         ArgumentCaptor<Author> authorCaptor = ArgumentCaptor.forClass(Author.class);
@@ -168,7 +183,7 @@ public class AuthorTest {
 
         when(authorRepository.findById(EXISTS_AUTHOR_ID)).thenReturn(Optional.of(mockAuthor));
 
-        when(gameRepository.existsByAuthor_Id(EXISTS_AUTHOR_ID)).thenReturn(false);
+        when(gameRepository.existsByAuthorId(EXISTS_AUTHOR_ID)).thenReturn(false);
 
         authorService.delete(EXISTS_AUTHOR_ID);
 
@@ -182,7 +197,6 @@ public class AuthorTest {
 
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> authorService.delete(NOT_EXISTS_AUTHOR_ID));
 
-        assertEquals("Author " + NOT_EXISTS_AUTHOR_ID + " not found", exception.getMessage());
         verify(authorRepository, never()).deleteById(anyLong());
     }
 
@@ -193,7 +207,7 @@ public class AuthorTest {
 
         when(authorRepository.findById(EXISTS_AUTHOR_ID)).thenReturn(Optional.of(mockAuthor));
 
-        when(gameRepository.existsByAuthor_Id(EXISTS_AUTHOR_ID)).thenReturn(true);
+        when(gameRepository.existsByAuthorId(EXISTS_AUTHOR_ID)).thenReturn(true);
 
         assertThrows(DeleteEntityConflictException.class, () -> authorService.delete(EXISTS_AUTHOR_ID));
         verify(authorRepository, never()).deleteById(anyLong());

@@ -8,7 +8,6 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +27,12 @@ public class ClientServiceImpl implements ClientService {
      */
     @Override
     public List<Client> findAll() {
-        return (List<Client>) this.clientRepository.findAll();
+        List<Client> clients = (List<Client>) this.clientRepository.findAll();
+
+        clients.forEach(client ->
+                client.setHasGames(loanRepository.existsByClientId(client.getId()))
+        );
+        return clients;
     }
 
     /**
@@ -75,7 +79,7 @@ public class ClientServiceImpl implements ClientService {
         if (this.clientRepository.findById(id).orElse(null) == null) {
             throw new EntityNotFoundException("Cliente " + id.toString() + " no encontrado");
         }
-        if (this.loanRepository.existsByClient_Id(id)) {
+        if (this.loanRepository.existsByClientId(id)) {
             throw new DeleteEntityConflictException("No se puede borrar el cliente " + id + " porque esta asociado a un préstamo");
         }
         this.clientRepository.deleteById(id);

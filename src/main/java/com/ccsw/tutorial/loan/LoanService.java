@@ -6,6 +6,7 @@ import com.ccsw.tutorial.loan.model.LoanSearchDTO;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import com.ccsw.tutorial.common.exception.GameNotAvailableToLoanException;
+import com.ccsw.tutorial.common.exception.ClientAlreadyHasALoanException;
 
 public interface LoanService {
 
@@ -21,8 +22,10 @@ public interface LoanService {
      * Crea un nuevo prestamo
      *
      * @param dto datos del prestamo
+     * @throws IllegalArgumentException si la fecha de retorno es anterior o a la de préstamo o el prestamo tiene una duración de mas de 14 días
      * @throws EntityNotFoundException si no existe el juego o el cliente
      * @throws GameNotAvailableToLoanException si el juego no esta disponible para ser prestado
+     * @throws ClientAlreadyHasALoanException si el cliente ya tiene un prestamo activo dentro del intervalo de tiempo del nuevo prestamo
      */
     void create(LoanDTO dto) throws EntityNotFoundException;
 
@@ -30,8 +33,10 @@ public interface LoanService {
      * Actualiza un prestamo existente
      *
      * @param dto datos del prestamo incluyendo id
+     * @throws IllegalArgumentException si la fecha de retorno es anterior o a la de préstamo o el prestamo tiene una duración de mas de 14 días
      * @throws EntityNotFoundException si no existe el prestamo, juego o cliente
      * @throws GameNotAvailableToLoanException si el juego no esta disponible para ser prestado
+     * @throws ClientAlreadyHasALoanException si el cliente ya tiene un prestamo activo dentro del intervalo de tiempo del nuevo prestamo
      */
     void update(LoanDTO dto) throws EntityNotFoundException;
 

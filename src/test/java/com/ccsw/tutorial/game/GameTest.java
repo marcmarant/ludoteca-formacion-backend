@@ -19,6 +19,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -74,7 +75,7 @@ public class GameTest {
 		List<Game> list = new ArrayList<>();
 		list.add(new Game());
 
-		when(gameRepository.findAll(argThat((Specification<Game> spec) -> spec != null))).thenReturn(list);
+		when(gameRepository.findAll(argThat(Objects::nonNull))).thenReturn(list);
 
 		List<Game> games = gameService.find("test", EXISTS_CATEGORY_ID);
 
@@ -83,7 +84,7 @@ public class GameTest {
 	}
 
 	@Test
-	public void createShouldCreateAValidGame() {
+	public void createShouldCreateAGame() {
 
 		ArgumentCaptor<Game> gameCaptor = ArgumentCaptor.forClass(Game.class);
 

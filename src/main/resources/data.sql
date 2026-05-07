@@ -26,5 +26,7 @@ INSERT INTO loan(loan_date, return_date, game_id, client_id) VALUES ('2026-04-15
 INSERT INTO loan(loan_date, return_date, game_id, client_id) VALUES ('2026-04-15', '2026-04-25', 4, 2);
 INSERT INTO loan(loan_date, return_date, game_id, client_id) VALUES ('2026-04-20', '2026-04-30', 1, 2);
 
--- usuario con hash de ejemplo para la contraseña "admin"
-INSERT INTO users(username, password_hash) VALUES ('admin', '$2a$10$ygR/J4My3fMEKrl2n5ihbuTzuvDxGNCpWR.UxIX4PGV0LM254I.L2');
+-- usuario con hash de ejemplo para la contraseña "admin" y rol administrador
+INSERT INTO users(username, password_hash, role) VALUES ('admin', '$2a$10$ygR/J4My3fMEKrl2n5ihbuTzuvDxGNCpWR.UxIX4PGV0LM254I.L2', 'ROLE_ADMIN');
+-- usuario con hash de ejemplo para la contraseña "employee1" y rol empleado
+INSERT INTO users(username, password_hash, role) VALUES ('employee1', '$2a$10$POXxHqKj1ZerIwJKEdz.EuqC6reiqYcM1t/mg6KfJbK8bM.O/Jfge', 'ROLE_EMPLOYEE');

@@ -33,6 +33,9 @@ public class AuthConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
 
+                        // rutas solo accesibles por administrador
+                        .requestMatchers("/users").hasRole("ADMIN")
+
                         // rutas publicas
                         .requestMatchers("/auth", "/auth/").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()

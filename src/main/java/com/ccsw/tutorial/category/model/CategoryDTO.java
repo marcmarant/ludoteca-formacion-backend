@@ -9,6 +9,8 @@ public class CategoryDTO {
     @NotBlank(message = "El nombre no puede estar vacío")
     private String name;
 
+    private boolean hasGames;
+
     /**
      * @return id
      */
@@ -35,5 +37,19 @@ public class CategoryDTO {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * @return hasGames
+     */
+    public boolean getHasGames() {
+        return this.hasGames;
+    }
+
+    /**
+     * @param hasGames new value of {@link #getHasGames}.
+     */
+    public void setHasGames(boolean hasGames) {
+        this.hasGames = hasGames;
     }
 }

@@ -23,7 +23,10 @@ public class GameSpecification implements Specification<Game> {
         if (criteria.getOperation().equalsIgnoreCase(":") && criteria.getValue() != null) {
             Path<String> path = getPath(root);
             if (path.getJavaType() == String.class) {
-                return builder.like(path, "%" + criteria.getValue() + "%");
+                return builder.like(
+                        builder.upper(path),
+                        "%" + criteria.getValue().toString().toUpperCase() + "%"
+                );
             } else {
                 return builder.equal(path, criteria.getValue());
             }
