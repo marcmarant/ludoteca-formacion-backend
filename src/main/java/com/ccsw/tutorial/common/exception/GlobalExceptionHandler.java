@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AtLeastOneAdministratorRequiredException.class)
     public ResponseEntity<String> handleAtLeastOneAdministratorRequired(AtLeastOneAdministratorRequiredException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 
 }

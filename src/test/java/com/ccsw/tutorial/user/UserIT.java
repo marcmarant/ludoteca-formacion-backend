@@ -169,7 +169,7 @@ public class UserIT extends AbstractIT {
     }
 
     @Test
-    public void updateAdminRoleToEmployeeShouldReturnBadRequestError() {
+    public void updateAdminRoleToEmployeeShouldReturnConflictError() {
 
         ResponseEntity<Void> response = restTemplate.exchange(
                 LOCALHOST + port + SERVICE_PATH + "/" + EXISTS_ADMIN_USER_ID + "?role=" + Role.ROLE_EMPLOYEE,
@@ -179,7 +179,7 @@ public class UserIT extends AbstractIT {
         );
 
         assertNotNull(response);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
     }
 
     @Test
@@ -221,7 +221,7 @@ public class UserIT extends AbstractIT {
     }
 
     @Test
-    public void deleteLastAdminUserShouldReturnBadRequestError() {
+    public void deleteLastAdminUserShouldReturnConflictError() {
 
         ResponseEntity<Void> response = restTemplate.exchange(
                 LOCALHOST + port + SERVICE_PATH + "/" + EXISTS_ADMIN_USER_ID,
@@ -231,7 +231,7 @@ public class UserIT extends AbstractIT {
         );
 
         assertNotNull(response);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
     }
 
 }
