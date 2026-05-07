@@ -27,7 +27,7 @@ public interface GameRepository extends CrudRepository<Game, Long>, JpaSpecifica
      * @param categoryId id de la categoria
      * @return true si existe algun juego asociado a la categoria, false en caso contrario
      */
-    boolean existsByCategory_Id(Long categoryId);
+    boolean existsByCategoryId(Long categoryId);
 
     /**
      * Devuelve si existe algun juego asociado a un autor concreto
@@ -35,5 +35,5 @@ public interface GameRepository extends CrudRepository<Game, Long>, JpaSpecifica
      * @param authorId id del autor
      * @return true si existe algun juego asociado al autor, false en caso contrario
      */
-    boolean existsByAuthor_Id(Long authorId);
+    boolean existsByAuthorId(Long authorId);
 }

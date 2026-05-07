@@ -2,6 +2,7 @@ package com.ccsw.tutorial.game;
 
 import com.ccsw.tutorial.author.model.AuthorDTO;
 import com.ccsw.tutorial.category.model.CategoryDTO;
+import com.ccsw.tutorial.common.AbstractIT;
 import com.ccsw.tutorial.game.model.GameDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,16 +26,17 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class GameIT {
+public class GameIT extends AbstractIT {
 
-    public static final String LOCALHOST = "http://localhost:";
     public static final String SERVICE_PATH = "/games";
 
     // Based on java/resources/data.sql
-    private static final int BOOTSTRAP_EXISTENT_GAMES_NUMBER = 6;
+    private static final int TOTAL_GAMES = 6;
+    private static final Long EXISTS_GAME_ID = 1L;
+    private static final Long NOT_EXISTS_GAME_ID = 0L;
+    private static final Long LOAN_REFERENCED_GAME_ID = 1L;
+    private static final Long NOT_REFERENCED_GAME_ID = 5L;
 
-    public static final Long EXISTS_GAME_ID = 1L;
-    public static final Long NOT_EXISTS_GAME_ID = 0L;
     private static final String NOT_EXISTS_TITLE = "NotExists";
     private static final String EXISTS_TITLE = "Aventureros";
     private static final String NEW_TITLE = "Nuevo juego";
@@ -44,13 +46,8 @@ public class GameIT {
     private static final String TITLE_PARAM = "title";
     private static final String CATEGORY_ID_PARAM = "idCategory";
 
-    @LocalServerPort
-    private int port;
-
-    @Autowired
-    private TestRestTemplate restTemplate;
-
-    ParameterizedTypeReference<List<GameDTO>> responseType = new ParameterizedTypeReference<List<GameDTO>>(){};
+    ParameterizedTypeReference<List<GameDTO>> listResponseType = new ParameterizedTypeReference<List<GameDTO>>(){};
+    ParameterizedTypeReference<GameDTO> gameResponseType = new ParameterizedTypeReference<GameDTO>(){};
 
     private String getUrlWithParams(){
         return UriComponentsBuilder.fromHttpUrl(LOCALHOST + port + SERVICE_PATH)
@@ -67,11 +64,19 @@ public class GameIT {
         params.put(TITLE_PARAM, null);
         params.put(CATEGORY_ID_PARAM, null);
 
-        ResponseEntity<List<GameDTO>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, responseType, params);
+        ResponseEntity<List<GameDTO>> response = restTemplate.exchange(
+                getUrlWithParams(),
+                HttpMethod.GET,
+                null,
+                listResponseType,
+                params
+        );
 
         assertNotNull(response);
-        assertEquals(BOOTSTRAP_EXISTENT_GAMES_NUMBER, response.getBody().size());
+        assertEquals(TOTAL_GAMES, response.getBody().size());
     }
+
+    // ME HE QUEDADO POR AQUI ABAJO
 
     @Test
     public void findExistsTitleShouldReturnGames() {
@@ -82,7 +87,7 @@ public class GameIT {
         params.put(TITLE_PARAM, EXISTS_TITLE);
         params.put(CATEGORY_ID_PARAM, null);
 
-        ResponseEntity<List<GameDTO>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, responseType, params);
+        ResponseEntity<List<GameDTO>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, listResponseType, params);
 
         assertNotNull(response);
         assertEquals(GAMES_WITH_FILTER, response.getBody().size());
@@ -97,7 +102,7 @@ public class GameIT {
         params.put(TITLE_PARAM, null);
         params.put(CATEGORY_ID_PARAM, EXISTS_CATEGORY);
 
-        ResponseEntity<List<GameDTO>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, responseType, params);
+        ResponseEntity<List<GameDTO>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, listResponseType, params);
 
         assertNotNull(response);
         assertEquals(GAMES_WITH_FILTER, response.getBody().size());
@@ -112,7 +117,7 @@ public class GameIT {
         params.put(TITLE_PARAM, EXISTS_TITLE);
         params.put(CATEGORY_ID_PARAM, EXISTS_CATEGORY);
 
-        ResponseEntity<List<GameDTO>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, responseType, params);
+        ResponseEntity<List<GameDTO>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, listResponseType, params);
 
         assertNotNull(response);
         assertEquals(GAMES_WITH_FILTER, response.getBody().size());
@@ -127,7 +132,7 @@ public class GameIT {
         params.put(TITLE_PARAM, NOT_EXISTS_TITLE);
         params.put(CATEGORY_ID_PARAM, null);
 
-        ResponseEntity<List<GameDTO>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, responseType, params);
+        ResponseEntity<List<GameDTO>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, listResponseType, params);
 
         assertNotNull(response);
         assertEquals(GAMES_WITH_FILTER, response.getBody().size());
@@ -142,7 +147,7 @@ public class GameIT {
         params.put(TITLE_PARAM, null);
         params.put(CATEGORY_ID_PARAM, NOT_EXISTS_CATEGORY);
 
-        ResponseEntity<List<GameDTO>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, responseType, params);
+        ResponseEntity<List<GameDTO>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, listResponseType, params);
 
         assertNotNull(response);
         assertEquals(GAMES_WITH_FILTER, response.getBody().size());
@@ -157,21 +162,21 @@ public class GameIT {
         params.put(TITLE_PARAM, NOT_EXISTS_TITLE);
         params.put(CATEGORY_ID_PARAM, NOT_EXISTS_CATEGORY);
 
-        ResponseEntity<List<GameDTO>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, responseType, params);
+        ResponseEntity<List<GameDTO>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, listResponseType, params);
         assertNotNull(response);
         assertEquals(GAMES_WITH_FILTER, response.getBody().size());
 
         params.put(TITLE_PARAM, NOT_EXISTS_TITLE);
         params.put(CATEGORY_ID_PARAM, EXISTS_CATEGORY);
 
-        response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, responseType, params);
+        response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, listResponseType, params);
         assertNotNull(response);
         assertEquals(GAMES_WITH_FILTER, response.getBody().size());
 
         params.put(TITLE_PARAM, EXISTS_TITLE);
         params.put(CATEGORY_ID_PARAM, NOT_EXISTS_CATEGORY);
 
-        response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, responseType, params);
+        response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, listResponseType, params);
         assertNotNull(response);
         assertEquals(GAMES_WITH_FILTER, response.getBody().size());
     }
@@ -195,14 +200,14 @@ public class GameIT {
         params.put(TITLE_PARAM, NEW_TITLE);
         params.put(CATEGORY_ID_PARAM, null);
 
-        ResponseEntity<List<GameDTO>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, responseType, params);
+        ResponseEntity<List<GameDTO>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, listResponseType, params);
 
         assertNotNull(response);
         assertEquals(0, response.getBody().size());
 
         restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.POST, new HttpEntity<>(dto), Void.class);
 
-        response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, responseType, params);
+        response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, listResponseType, params);
 
         assertNotNull(response);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
@@ -228,14 +233,14 @@ public class GameIT {
         params.put(TITLE_PARAM, NEW_TITLE);
         params.put(CATEGORY_ID_PARAM, null);
 
-        ResponseEntity<List<GameDTO>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, responseType, params);
+        ResponseEntity<List<GameDTO>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, listResponseType, params);
 
         assertNotNull(response);
         assertEquals(0, response.getBody().size());
 
         restTemplate.exchange(LOCALHOST + port + SERVICE_PATH + "/" + EXISTS_GAME_ID, HttpMethod.PUT, new HttpEntity<>(dto), Void.class);
 
-        response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, responseType, params);
+        response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, listResponseType, params);
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -243,15 +248,75 @@ public class GameIT {
         assertEquals(EXISTS_GAME_ID, response.getBody().get(0).getId());
     }
 
+    // ME HE QUEDADO POR AQUI ARRIBA
+
     @Test
     public void UpdateNotExistentGameShouldReturnNotFoundError() {
 
         GameDTO dto = new GameDTO();
-        dto.setTitle(NEW_TITLE);
+        dto.setTitle("New Title");
 
-        ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH + "/" + NOT_EXISTS_GAME_ID, HttpMethod.PUT, new HttpEntity<>(dto), Void.class);
+        ResponseEntity<?> response = restTemplate.exchange(
+                LOCALHOST + port + SERVICE_PATH + "/" + NOT_EXISTS_GAME_ID,
+                HttpMethod.PUT,
+                buildAuthEntity(dto),
+                Void.class
+        );
 
+        assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void deleteGameShouldDeleteExpectedGame() {
+
+        ResponseEntity<?> response = restTemplate.exchange(
+                LOCALHOST + port + SERVICE_PATH + "/" + NOT_REFERENCED_GAME_ID,
+                HttpMethod.DELETE,
+                buildAuthEntity(),
+                Void.class
+        );
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+
+        ResponseEntity<GameDTO> findByIdResponse = restTemplate.exchange(
+                LOCALHOST + port + SERVICE_PATH + "/" + NOT_REFERENCED_GAME_ID,
+                HttpMethod.GET,
+                null,
+                gameResponseType
+        );
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.NOT_FOUND, findByIdResponse.getStatusCode());
+    }
+
+    @Test
+    public void deleteNonExistentGameShouldReturnNotFoundError() {
+
+        ResponseEntity<?> response = restTemplate.exchange(
+                LOCALHOST + port + SERVICE_PATH + "/" + NOT_EXISTS_GAME_ID,
+                HttpMethod.DELETE,
+                buildAuthEntity(),
+                Void.class
+        );
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void deleteReferencedGameShouldReturnConflictError() {
+
+        ResponseEntity<?> response = restTemplate.exchange(
+                LOCALHOST + port + SERVICE_PATH + "/" + LOAN_REFERENCED_GAME_ID,
+                HttpMethod.DELETE,
+                buildAuthEntity(),
+                Void.class
+        );
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
     }
 
 }

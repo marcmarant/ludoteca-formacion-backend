@@ -1,7 +1,11 @@
 package com.ccsw.tutorial.category;
 
+import com.ccsw.tutorial.author.model.Author;
+import com.ccsw.tutorial.author.model.AuthorDTO;
 import com.ccsw.tutorial.category.model.Category;
 import com.ccsw.tutorial.category.model.CategoryDTO;
+import com.ccsw.tutorial.common.exception.DeleteEntityConflictException;
+import com.ccsw.tutorial.game.GameRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +26,9 @@ public class CategoryTest {
 
     @Mock
     private CategoryRepository categoryRepository;
+
+    @Mock
+    private GameRepository gameRepository;
 
     @InjectMocks
     private CategoryServiceImpl categoryService;
@@ -70,7 +77,7 @@ public class CategoryTest {
 
         when(categoryRepository.save(any(Category.class))).thenAnswer(invocation -> {
             Category category = invocation.getArgument(0);
-            category.setId(EXISTS_CATEGORY_ID); // Simulate the auto-generated ID
+            category.setId(EXISTS_CATEGORY_ID);
             return category;
         });
 
@@ -129,14 +136,53 @@ public class CategoryTest {
     }
 
     @Test
+    public void updateNonExistentCategoryShouldThrowEntityNotFoundException() {
+
+        CategoryDTO dto = new CategoryDTO();
+        dto.setId(NOT_EXISTS_CATEGORY_ID);
+        dto.setName("Updated Name");
+
+        when(categoryRepository.findById(NOT_EXISTS_CATEGORY_ID)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> categoryService.update(dto));
+
+        verify(categoryRepository, never()).save(any(Category.class));
+    }
+
+    @Test
     public void deleteShouldDeleteExpectedCategory() {
 
         Category mockCategory = mock(Category.class);
 
         when(categoryRepository.findById(EXISTS_CATEGORY_ID)).thenReturn(Optional.of(mockCategory));
 
+        when(gameRepository.existsByCategoryId(EXISTS_CATEGORY_ID)).thenReturn(false);
+
         categoryService.delete(EXISTS_CATEGORY_ID);
 
         verify(categoryRepository).deleteById(EXISTS_CATEGORY_ID);
+    }
+
+    @Test
+    public void deleteNonExistentCategoryShouldThrowEntityNotFoundException() {
+
+        when(categoryRepository.findById(NOT_EXISTS_CATEGORY_ID)).thenReturn(Optional.empty());
+
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> categoryService.delete(NOT_EXISTS_CATEGORY_ID));
+
+        verify(categoryRepository, never()).deleteById(anyLong());
+    }
+
+    @Test
+    public void deleteReferencedCategoryShouldThrowDeleteEntityConflictException() {
+
+        Category mockCategory = mock(Category.class);
+
+        when(categoryRepository.findById(EXISTS_CATEGORY_ID)).thenReturn(Optional.of(mockCategory));
+
+        when(gameRepository.existsByCategoryId(EXISTS_CATEGORY_ID)).thenReturn(true);
+
+        assertThrows(DeleteEntityConflictException.class, () -> categoryService.delete(EXISTS_CATEGORY_ID));
+        verify(categoryRepository, never()).deleteById(anyLong());
     }
 }

@@ -31,6 +31,7 @@ public class JwtService {
         return Jwts.builder()
                 .subject(String.valueOf(user.getId()))
                 .claim("username", user.getUsername())
+                .claim("role", user.getRole())
                 .issuedAt(new Date(now))
                 .expiration(new Date(now + this.expiration))
                 .signWith(this.key)

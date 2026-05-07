@@ -24,10 +24,17 @@ public abstract class AbstractIT {
     @Autowired
     protected TestRestTemplate restTemplate;
 
-    private String getAuthToken() {
+    private String getAuthToken(boolean admin) {
         AuthDTO authDTO = new AuthDTO();
-        authDTO.setUsername("admin");
-        authDTO.setPassword("admin");
+
+        // basado en los usuarios definidos en java/resources/data.sql
+        if (admin) {
+            authDTO.setUsername("admin");
+            authDTO.setPassword("admin");
+        } else {
+            authDTO.setUsername("employee1");
+            authDTO.setPassword("employee1");
+        }
 
         ResponseEntity<String> response = restTemplate.exchange(
                 LOCALHOST + port + AUTH_PATH,
@@ -44,11 +51,21 @@ public abstract class AbstractIT {
 
     protected <T> HttpEntity<T> buildAuthEntity(T body) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(getAuthToken());
+        headers.setBearerAuth(getAuthToken(false));
         return new HttpEntity<>(body, headers);
     }
 
     protected HttpEntity<?> buildAuthEntity() {
         return buildAuthEntity(null);
+    }
+
+    protected <T> HttpEntity<T> buildAuthAdminEntity(T body) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(getAuthToken(true));
+        return new HttpEntity<>(body, headers);
+    }
+
+    protected HttpEntity<?> buildAuthAdminEntity() {
+        return buildAuthAdminEntity(null);
     }
 }

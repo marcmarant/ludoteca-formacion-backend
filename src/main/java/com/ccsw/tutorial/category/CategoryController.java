@@ -39,7 +39,6 @@ public class CategoryController {
     @Operation(summary = "Create", description = "Method that creates a new category")
     @RequestMapping(path = "", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    // TODO: Ver si devolver el id de la categoría creada o el objeto completo
     public void create(@Valid @RequestBody CategoryDTO dto) {
         categoryService.create(dto);
     }

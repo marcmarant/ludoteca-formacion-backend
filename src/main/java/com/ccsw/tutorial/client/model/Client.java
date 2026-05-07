@@ -16,6 +16,9 @@ public class Client {
     @NotBlank
     private String name;
 
+    @Transient
+    private boolean hasGames;
+
     /**
      * @return id
      */
@@ -42,6 +45,20 @@ public class Client {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * @return hasGames
+     */
+    public boolean getHasGames() {
+        return this.hasGames;
+    }
+
+    /**
+     * @param hasGames new value of {@link #getHasGames}.
+     */
+    public void setHasGames(boolean hasGames) {
+        this.hasGames = hasGames;
     }
 
     @Override

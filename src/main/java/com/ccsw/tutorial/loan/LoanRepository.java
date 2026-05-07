@@ -29,7 +29,7 @@ public interface LoanRepository extends CrudRepository<Loan, Long>, JpaSpecifica
      * @param clientId id del cliente
      * @return true si existe algun préstamo asociado al cliente, false en caso contrario
      */
-    boolean existsByClient_Id(Long clientId);
+    boolean existsByClientId(Long clientId);
 
     /**
      * Deevuelve si existe un prestamo del cliente indicado en el intervalo de fechas indicado

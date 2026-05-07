@@ -4,6 +4,7 @@ public class UserDTO {
 
     private Long id;
     private String username;
+    private Role role;
 
     /**
      * @return id
@@ -31,5 +32,19 @@ public class UserDTO {
      */
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    /**
+     * @return role
+     */
+    public Role getRole() {
+        return this.role;
+    }
+
+    /**
+     * @param role new value of {@link #getRole}.
+     */
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

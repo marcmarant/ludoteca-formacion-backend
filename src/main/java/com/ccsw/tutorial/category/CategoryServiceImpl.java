@@ -27,7 +27,12 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public List<Category> findAll() {
-        return (List<Category>) this.categoryRepository.findAll();
+        List<Category> categories = (List<Category>) this.categoryRepository.findAll();
+
+        categories.forEach(category ->
+                category.setHasGames(gameRepository.existsByCategoryId(category.getId()))
+        );
+        return categories;
     }
 
     /**
@@ -36,12 +41,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category findById(Long id) throws EntityNotFoundException {
 
-        Optional<Category> category = this.categoryRepository.findById(id);
-
-        if (category.isEmpty()) {
-            throw new EntityNotFoundException();
-        }
-        return category.get();
+        Category category = this.categoryRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        category.setHasGames(gameRepository.existsByCategoryId(category.getId()));
+        return category;
     }
 
     /**
@@ -81,7 +83,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (this.categoryRepository.findById(id).orElse(null) == null) {
             throw new EntityNotFoundException("Categoria " + id.toString() + " no econtrada");
         }
-        if (this.gameRepository.existsByCategory_Id(id)) {
+        if (this.gameRepository.existsByCategoryId(id)) {
             throw new DeleteEntityConflictException("No se puede borrar la categoria " + id + " porque esta asociado a un juego");
         }
         this.categoryRepository.deleteById(id);

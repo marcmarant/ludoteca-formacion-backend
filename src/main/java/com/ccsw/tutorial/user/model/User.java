@@ -20,6 +20,11 @@ public class User {
     @NotBlank
     private String passwordHash;
 
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+
     /**
      * @return id
      */
@@ -62,8 +67,22 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
+    /**
+     * @return role
+     */
+    public Role getRole() {
+        return this.role;
+    }
+
+    /**
+     * @param role new value of {@link #getRole}.
+     */
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     @Override
     public String toString() {
-        return "ID: " + this.id + "\nUsername: " + this.username;
+        return "ID: " + this.id + "\nUsername: " + this.username + "\nRole: " + this.role;
     }
 }

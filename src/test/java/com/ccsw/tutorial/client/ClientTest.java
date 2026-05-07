@@ -2,6 +2,8 @@ package com.ccsw.tutorial.client;
 
 import com.ccsw.tutorial.client.model.Client;
 import com.ccsw.tutorial.client.model.ClientDTO;
+import com.ccsw.tutorial.common.exception.DeleteEntityConflictException;
+import com.ccsw.tutorial.loan.LoanRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +24,9 @@ public class ClientTest {
 
 	@Mock
 	private ClientRepository clientRepository;
+
+    @Mock
+    private LoanRepository loanRepository;
 
 	@InjectMocks
 	private ClientServiceImpl clientService;
@@ -143,6 +148,8 @@ public class ClientTest {
 
 		when(clientRepository.findById(EXISTS_CLIENT_ID)).thenReturn(Optional.of(mockClient));
 
+        when(loanRepository.existsByClientId(EXISTS_CLIENT_ID)).thenReturn(false);
+
 		clientService.delete(EXISTS_CLIENT_ID);
 
 		verify(clientRepository).deleteById(EXISTS_CLIENT_ID);
@@ -157,4 +164,17 @@ public class ClientTest {
 
 		verify(clientRepository, never()).deleteById(anyLong());
 	}
+
+    @Test
+    public void deleteReferencedClientShouldThrowDeleteEntityConflictException() {
+
+        Client mockClient = mock(Client.class);
+
+        when(clientRepository.findById(EXISTS_CLIENT_ID)).thenReturn(Optional.of(mockClient));
+
+        when(loanRepository.existsByClientId(EXISTS_CLIENT_ID)).thenReturn(true);
+
+        assertThrows(DeleteEntityConflictException.class, () -> clientService.delete(EXISTS_CLIENT_ID));
+        verify(clientRepository, never()).deleteById(anyLong());
+    }
 }
