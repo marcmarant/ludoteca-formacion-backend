@@ -38,7 +38,7 @@ public class AuthConfig {
         // Permite solicitudes desde cualquier direccion
         configuration.setAllowedOriginPatterns(List.of("*"));
 
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -58,7 +58,7 @@ public class AuthConfig {
                 .authorizeHttpRequests(auth -> auth
 
                         // rutas solo accesibles por administrador
-                        .requestMatchers("/users").hasRole("ADMIN")
+                        .requestMatchers("/users", "/users/**").hasRole("ADMIN")
 
                         // rutas publicas
                         .requestMatchers("/auth", "/auth/").permitAll()
