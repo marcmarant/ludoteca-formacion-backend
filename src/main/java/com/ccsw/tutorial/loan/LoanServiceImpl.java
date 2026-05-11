@@ -17,6 +17,11 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
+/**
+ * Implementación de los servicios de loans.
+ *
+ * @author Marcos Martínez Antón
+ */
 @Service
 @Transactional
 public class LoanServiceImpl implements LoanService {

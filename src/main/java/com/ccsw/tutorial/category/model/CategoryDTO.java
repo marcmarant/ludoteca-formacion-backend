@@ -2,6 +2,11 @@ package com.ccsw.tutorial.category.model;
 
 import jakarta.validation.constraints.NotBlank;
 
+/**
+ * DTO de categoria para comunicar el controlador con los servicios.
+ *
+ * @author Marcos Martínez Antón
+ */
 public class CategoryDTO {
 
     private Long id;

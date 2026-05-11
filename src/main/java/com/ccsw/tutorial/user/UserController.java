@@ -14,6 +14,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Clase controller que define los endpoints de users.
+ * Permite realizar un get de todos los usuarios, un get de usuario por id,
+ * un post para crear un nuevo usuario, un patch para actualizar su rol
+ * y un delete para eliminarlo.
+ *
+ * @author Marcos Martínez Antón
+ */
 @Tag(name = "Users", description = "API of User")
 @RequestMapping(value = "/users")
 @RestController

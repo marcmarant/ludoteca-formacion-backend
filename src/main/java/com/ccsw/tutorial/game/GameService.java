@@ -7,16 +7,23 @@ import jakarta.persistence.EntityNotFoundException;
 
 import java.util.List;
 
+/**
+ * Interfaz que define los servicios de games.
+ * Permite hacer una busqueda filtrada, crear y actualizar.
+ *
+ * @author Marcos Martínez Antón
+ */
 public interface GameService {
 
     /**
      * Recupera los juegos filtrando opcionalmente por título y/o categoría
      *
      * @param title título del juego
+     * @param author nombre del autor
      * @param idCategory PK de la categoría
      * @return {@link List} de {@link Game}
      */
-    List<Game> find(String title, Long idCategory);
+    List<Game> find(String title, String author, Long idCategory);
 
     /**
      * Crea un nuevo juego

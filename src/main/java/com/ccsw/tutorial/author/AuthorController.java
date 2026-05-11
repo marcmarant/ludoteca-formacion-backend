@@ -14,6 +14,14 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Clase controller que define los endpoints de autores.
+ * Permite realizar un get de todos los autores, un post que los devuelve paginados,
+ * un get por id, un post para crear un nuevo autor, un put para actualizarlo
+ * y un delete para eliminar un autor.
+ *
+ * @author Marcos Martínez Antón
+ */
 @Tag(name = "Authors", description = "API of Author")
 @RequestMapping(value = "/authors")
 @RestController

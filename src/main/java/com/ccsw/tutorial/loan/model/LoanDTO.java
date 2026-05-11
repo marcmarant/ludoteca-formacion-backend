@@ -6,6 +6,11 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
+/**
+ * DTO de loan para comunicar el controlador con los servicios.
+ *
+ * @author Marcos Martínez Antón
+ */
 public class LoanDTO {
 
 	private Long id;

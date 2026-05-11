@@ -6,6 +6,11 @@ import com.ccsw.tutorial.category.model.Category;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
+/**
+ * Entidad game, que representa un juego de mesa.
+ *
+ * @author Marcos Martínez Antón
+ */
 @Entity
 @Table(name = "game")
 public class Game {

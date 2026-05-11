@@ -8,6 +8,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/**
+ * Implementación de los servicios de autentificacion.
+ *
+ * @author Marcos Martínez Antón
+ */
 @Service
 public class AuthServiceImpl implements AuthService {
 

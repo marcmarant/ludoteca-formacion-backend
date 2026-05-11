@@ -10,6 +10,11 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.CrudRepository;
 
+/**
+ * Repositorio para la entidad {@link Loan}
+ *
+ * @author Marcos Martínez Antón
+ */
 public interface LoanRepository extends CrudRepository<Loan, Long>, JpaSpecificationExecutor<Loan> {
 
     /**

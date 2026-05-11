@@ -7,10 +7,16 @@ import jakarta.persistence.EntityNotFoundException;
 
 import java.util.List;
 
+/**
+ * Interfaz que define los servicios de categorías.
+ * Permite recuperar todas, recuperar por id, crear, actualizar y borrar.
+ *
+ * @author Marcos Martínez Antón
+ */
 public interface CategoryService {
 
     /**
-     * Recuperar todas las categorías
+     * Recupera todas las categorías
      *
      * @return {@link List} de {@link Category}
      */

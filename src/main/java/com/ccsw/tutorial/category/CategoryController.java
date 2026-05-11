@@ -12,6 +12,14 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Clase controller que define los endpoints de categorias.
+ * Permite realizar un get de todas las categorias, un get de una categoria por id,
+ * un post para crear una nueva categoria, un put para actualizar una categoria existente
+ * y un delete para eliminar una categoria.
+ *
+ * @author Marcos Martínez Antón
+ */
 @Tag(name = "Categories", description = "API of Category")
 @RequestMapping(value = "/categories")
 @RestController

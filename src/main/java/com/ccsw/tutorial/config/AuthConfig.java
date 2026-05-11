@@ -20,17 +20,29 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+/**
+ * Configuraciones de seguridad de la aplicación.
+ *
+ * @author Marcos Martínez Antón
+ */
 @Configuration
 public class AuthConfig {
 
     @Autowired
     JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    /**
+     * Define el codificador que se utiliza para hashear las contraseñas,
+     * en este caso se utiliza BCryptPasswordEncoder.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Configuración de cors para permitir solicitudes desde cualquier origen.
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -46,10 +58,13 @@ public class AuthConfig {
         return source;
     }
 
+    /**
+     * Configuración de seguridad de la aplicación.
+     * Aqui se definen las rutas publicas y las rutas protegidas, definiendo de entre estas ultimas
+     * aquellas en las que el usuario debe estar autenticado y aquellas en las que el usuario debe tener un rol concreto.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
-
         return http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)

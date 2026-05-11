@@ -12,6 +12,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementación de los servicios de clientes.
+ *
+ * @author Marcos Martínez Antón
+ */
 @Service
 @Transactional
 public class ClientServiceImpl implements ClientService {

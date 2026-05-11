@@ -3,6 +3,11 @@ package com.ccsw.tutorial.client.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
+/**
+ * Entidad cliente, que representa un cliente al que le es prestado un juego de mesa.
+ *
+ * @author Marcos Martínez Antón
+ */
 @Entity
 @Table(name = "client")
 public class Client {

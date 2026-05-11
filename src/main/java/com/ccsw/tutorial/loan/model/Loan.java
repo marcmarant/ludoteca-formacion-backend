@@ -8,6 +8,11 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
+/**
+ * Entidad que representa el prestamo de un juego a un cliente.
+ *
+ * @author Marcos Martínez Antón
+ */
 @Entity
 @Table(name = "loan")
 public class Loan {

@@ -6,6 +6,12 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Clase controller que define los endpoints de autentificacion.
+ * Ahora mismo permite hacer un post para autenticar a un usuario.
+ *
+ * @author Marcos Martínez Antón
+ */
 @Tag(name = "Authentication", description = "API for authentication")
 @RequestMapping(value = "/auth")
 @RestController

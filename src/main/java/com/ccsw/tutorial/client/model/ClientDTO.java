@@ -2,6 +2,11 @@ package com.ccsw.tutorial.client.model;
 
 import jakarta.validation.constraints.NotBlank;
 
+/**
+ * DTO de cliente para comunicar el controlador con los servicios.
+ *
+ * @author Marcos Martínez Antón
+ */
 public class ClientDTO {
 
     private Long id;

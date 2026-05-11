@@ -77,7 +77,7 @@ public class GameTest {
 
 		when(gameRepository.findAll(argThat(Objects::nonNull))).thenReturn(list);
 
-		List<Game> games = gameService.find("test", EXISTS_CATEGORY_ID);
+		List<Game> games = gameService.find("test", null, EXISTS_CATEGORY_ID);
 
 		assertNotNull(games);
 		assertEquals(1, games.size());

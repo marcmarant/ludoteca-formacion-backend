@@ -13,10 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementación de los servicios de games.
+ *
+ * @author Marcos Martínez Antón
+ */
 @Service
 @Transactional
 public class GameServiceImpl implements GameService {
@@ -34,11 +38,12 @@ public class GameServiceImpl implements GameService {
      * {@inheritDoc}
      */
     @Override
-    public List<Game> find(String title, Long idCategory) {
+    public List<Game> find(String title, String author, Long idCategory) {
 
         GameSpecification titleSpec = new GameSpecification(new SearchCriteria("title", ":", title));
+        GameSpecification authorSpec = new GameSpecification(new SearchCriteria("author.name", ":", author));
         GameSpecification categorySpec = new GameSpecification(new SearchCriteria("category.id", ":", idCategory));
-        Specification<Game> spec = titleSpec.and(categorySpec);
+        Specification<Game> spec = titleSpec.and(authorSpec).and(categorySpec);
 
         return this.gameRepository.findAll(spec);
     }

@@ -11,6 +11,11 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
+/**
+ * Clase que maneja los tokens JWT
+ *
+ * @author Marcos Martínez Antón
+ */
 @Service
 public class JwtService {
 
@@ -25,6 +30,12 @@ public class JwtService {
         this.expiration = expiration;
     }
 
+    /**
+     * Crea un token JWT con la información del usuario.
+     *
+     * @param user usuario a autenticar
+     * @return token JWT
+     */
     public String createToken(User user) {
         long now = System.currentTimeMillis();
 
@@ -38,6 +49,12 @@ public class JwtService {
                 .compact();
     }
 
+    /**
+     * Parsea un token JWT y devuelve sus claims. Si el token no es válido, lanzará una excepción.
+     *
+     * @param token a validar
+     * @return claims del token
+     */
     public Claims parseToken(String token) {
         return Jwts.parser()
                 .verifyWith((javax.crypto.SecretKey) this.key)
@@ -46,10 +63,22 @@ public class JwtService {
                 .getPayload();
     }
 
+    /**
+     * Obtiene el id de usuario del token JWT. Si el token no es válido, lanzará una excepción.
+     *
+     * @param token
+     * @return id de usuario
+     */
     public String getUserId(String token) {
         return parseToken(token).getSubject();
     }
 
+    /**
+     * Valida un token JWT. Si el token no es válido, lanzará una excepción.
+     *
+     * @param token
+     * @return true si es valido
+     */
     public boolean isValid(String token) {
         parseToken(token);
         return true;

@@ -1,5 +1,10 @@
 package com.ccsw.tutorial.user.model;
 
+/**
+ * DTO para crear un nuevo usuario.
+ *
+ * @author Marcos Martínez Antón
+ */
 public class CreateUserDTO {
 
     private String username;

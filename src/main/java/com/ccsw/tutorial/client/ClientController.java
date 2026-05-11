@@ -18,6 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Clase controller que define los endpoints de clientes.
+ * Permite realizar un get de todas los clientes, un post para crear uno nuevo,
+ * un put para actualizar un cliente existente y un delete para eliminarlo.
+ *
+ * @author Marcos Martínez Antón
+ */
 @Tag(name = "Clients", description = "API of Client")
 @RequestMapping(value = "/clients")
 @RestController

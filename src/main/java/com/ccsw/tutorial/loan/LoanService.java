@@ -8,6 +8,12 @@ import org.springframework.data.domain.Page;
 import com.ccsw.tutorial.common.exception.GameNotAvailableToLoanException;
 import com.ccsw.tutorial.common.exception.ClientAlreadyHasALoanException;
 
+/**
+ * Interfaz que define los servicios de loans.
+ * Permite hacer una consulta paginada, crear, actualizar y borrar.
+ *
+ * @author Marcos Martínez Antón
+ */
 public interface LoanService {
 
     /**

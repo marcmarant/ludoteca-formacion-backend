@@ -3,6 +3,11 @@ package com.ccsw.tutorial.user.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
+/**
+ * Entidad usuario, que representa un usuario que se autentica en el sistema.
+ *
+ * @author Marcos Martínez Antón
+ */
 @Entity
 @Table(name = "users") // user es una palabra reservada en SQL
 public class User {

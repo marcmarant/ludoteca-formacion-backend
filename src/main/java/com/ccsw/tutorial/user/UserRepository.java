@@ -6,6 +6,11 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
+/**
+ * Repositorio para la entidad {@link User}
+ *
+ * @author Marcos Martínez Antón
+ */
 public interface UserRepository extends CrudRepository<User, Long> {
 
     /**

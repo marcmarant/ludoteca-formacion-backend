@@ -14,6 +14,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementación de los servicios de autores.
+ *
+ * @author Marcos Martínez Antón
+ */
 @Service
 @Transactional
 public class AuthorServiceImpl implements AuthorService {

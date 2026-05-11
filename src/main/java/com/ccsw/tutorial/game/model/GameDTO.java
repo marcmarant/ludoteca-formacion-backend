@@ -4,6 +4,11 @@ import com.ccsw.tutorial.author.model.AuthorDTO;
 import com.ccsw.tutorial.category.model.CategoryDTO;
 import jakarta.validation.constraints.NotBlank;
 
+/**
+ * DTO de un juego para comunicar el controlador con los servicios.
+ *
+ * @author Marcos Martínez Antón
+ */
 public class GameDTO {
 
     private Long id;

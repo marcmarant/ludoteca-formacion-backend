@@ -7,6 +7,12 @@ import jakarta.persistence.EntityNotFoundException;
 
 import java.util.List;
 
+/**
+ * Interfaz que define los servicios de clientes.
+ * Permite recuperarlos todos, crear, actualizar y borrar.
+ *
+ * @author Marcos Martínez Antón
+ */
 public interface ClientService {
 
     /**

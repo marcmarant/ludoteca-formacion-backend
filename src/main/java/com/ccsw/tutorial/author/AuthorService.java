@@ -9,6 +9,13 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
+/**
+ * Interfaz que define los servicios de autores.
+ * Permite recuperarlos todos paginados o sin paginar,
+ * recuperar por id, crear, actualizar y borrar.
+ *
+ * @author Marcos Martínez Antón
+ */
 public interface AuthorService {
 
     /**

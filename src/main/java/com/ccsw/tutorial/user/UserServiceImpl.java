@@ -12,6 +12,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementación de los servicios de usuarios.
+ *
+ * @author Marcos Martínez Antón
+ */
 @Service
 public class UserServiceImpl implements UserService {
 

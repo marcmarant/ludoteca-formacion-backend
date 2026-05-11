@@ -8,6 +8,8 @@ import java.time.LocalDate;
 /**
  * DTO con la información de paginacion y los posibles filtros de busqueda por
  * titulo del juego, cliente y/o fecha de prestamo.
+ *
+ * @author Marcos Martínez Antón
  */
 public class LoanSearchDTO {
 

@@ -5,6 +5,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 
+/**
+ * Repositorio para la entidad {@link Author}
+ *
+ * @author Marcos Martínez Antón
+ */
 public interface AuthorRepository extends CrudRepository<Author, Long> {
 
     /**

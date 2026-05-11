@@ -16,6 +16,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Clase controller que define los endpoints de loans.
+ * Permite realizar un get paginado de las loans, un post para crear una nueva,
+ * un put para actualizar una existente y un delete para eliminarla.
+ *
+ * @author Marcos Martínez Antón
+ */
 @Tag(name = "Loans", description = "API of Loan")
 @RequestMapping(value = "/loans")
 @RestController

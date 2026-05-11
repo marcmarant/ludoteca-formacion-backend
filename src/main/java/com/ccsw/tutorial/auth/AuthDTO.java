@@ -2,6 +2,11 @@ package com.ccsw.tutorial.auth;
 
 import jakarta.validation.constraints.NotBlank;
 
+/**
+ * DTO de una petición de autenticación de un usuario, con el nombre de usuario y la contraseña.
+ *
+ * @author Marcos Martínez Antón
+ */
 public class AuthDTO {
 
     @NotBlank(message = "El nombre de usuario no puede estar vacío")

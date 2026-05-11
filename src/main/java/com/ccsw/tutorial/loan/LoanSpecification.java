@@ -11,6 +11,11 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.io.Serial;
 
+/**
+ * Especificación de la entidad {@link Loan} para realizar consultas filtradas.
+ *
+ * @author Marcos Martínez Antón
+ */
 public class LoanSpecification implements Specification<Loan> {
 
     @Serial

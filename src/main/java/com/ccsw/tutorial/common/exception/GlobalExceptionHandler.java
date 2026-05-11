@@ -9,6 +9,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
 
+/**
+ * Clase que intercepta las excepciones lanzadas por el sistema
+ * y devuelve el error http correspondiente.
+ *
+ * @author Marcos Martínez Antón
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

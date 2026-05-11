@@ -13,6 +13,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Clase controller que define los endpoints de games.
+ * Permite realizar un get filtrado de todos los juegos, un post para crear
+ * un nuevo juego y un delete para eliminar uno existente.
+ *
+ * @author Marcos Martínez Antón
+ */
 @Tag(name = "Game", description = "API of Game")
 @RequestMapping(value = "/games")
 @RestController
@@ -29,9 +36,10 @@ public class GameController {
     @RequestMapping(path = "", method = RequestMethod.GET)
     public List<GameDTO> find(
             @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "author", required = false) String author,
             @RequestParam(value = "idCategory", required = false) Long idCategory
     ) {
-        List<Game> games = gameService.find(title, idCategory);
+        List<Game> games = gameService.find(title, author, idCategory);
 
         return games.stream().map(e -> mapper.map(e, GameDTO.class)).collect(Collectors.toList());
     }

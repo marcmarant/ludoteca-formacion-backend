@@ -2,6 +2,11 @@ package com.ccsw.tutorial.author.model;
 
 import jakarta.validation.constraints.NotBlank;
 
+/**
+ * DTO de author para comunicar el controlador con los servicios.
+ *
+ * @author Marcos Martínez Antón
+ */
 public class AuthorDTO {
 
     private Long id;

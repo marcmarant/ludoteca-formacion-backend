@@ -1,5 +1,10 @@
 package com.ccsw.tutorial.user.model;
 
+/**
+ * DTO de usuario para comunicar el controlador con los servicios.
+ *
+ * @author Marcos Martínez Antón
+ */
 public class UserDTO {
 
     private Long id;

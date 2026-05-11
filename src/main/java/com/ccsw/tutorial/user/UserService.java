@@ -9,6 +9,12 @@ import jakarta.persistence.EntityNotFoundException;
 
 import java.util.List;
 
+/**
+ * Interfaz que define los servicios de usuarios.
+ * Permite recuperar todos, recuperar por id, crear, actualizar su rol y borrar.
+ *
+ * @author Marcos Martínez Antón
+ */
 public interface UserService {
 
     /**

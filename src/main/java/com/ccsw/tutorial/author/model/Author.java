@@ -3,6 +3,11 @@ package com.ccsw.tutorial.author.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
+/**
+ * Entidad categoria, que representa una autor de juegos de mesa.
+ *
+ * @author Marcos Martínez Antón
+ */
 @Entity
 @Table(name = "author")
 public class Author {

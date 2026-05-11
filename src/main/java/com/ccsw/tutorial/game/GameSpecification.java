@@ -7,6 +7,11 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.io.Serial;
 
+/**
+ * Especificación de la entidad {@link Game} para realizar consultas filtradas.
+ *
+ * @author Marcos Martínez Antón
+ */
 public class GameSpecification implements Specification<Game> {
 
     @Serial
