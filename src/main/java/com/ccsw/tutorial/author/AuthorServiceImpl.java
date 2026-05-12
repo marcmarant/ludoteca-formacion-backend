@@ -34,7 +34,12 @@ public class AuthorServiceImpl implements AuthorService {
      */
     @Override
     public List<Author> findAll() {
-        return (List<Author>) this.authorRepository.findAll();
+        List<Author> authors = (List<Author>) this.authorRepository.findAll();
+
+        authors.forEach(author ->
+                author.setHasGames(gameRepository.existsByAuthorId(author.getId()))
+        );
+        return authors;
     }
 
     /**
@@ -42,7 +47,12 @@ public class AuthorServiceImpl implements AuthorService {
      */
     @Override
     public Page<Author> findPage(AuthorSearchDTO dto) {
-        return this.authorRepository.findAll(dto.getPageable().getPageable());
+        Page<Author> authors = this.authorRepository.findAll(dto.getPageable().getPageable());
+
+        authors.forEach(author ->
+                author.setHasGames(gameRepository.existsByAuthorId(author.getId()))
+        );
+        return authors;
     }
 
     /**
@@ -51,12 +61,10 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public Author findById(Long id) throws EntityNotFoundException {
 
-        Optional<Author> author = this.authorRepository.findById(id);
+        Author author = this.authorRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        author.setHasGames(gameRepository.existsByAuthorId(author.getId()));
 
-        if (author.isEmpty()) {
-            throw new EntityNotFoundException();
-        }
-        return author.get();
+        return author;
     }
 
     /**

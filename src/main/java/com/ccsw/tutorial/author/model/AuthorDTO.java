@@ -16,6 +16,8 @@ public class AuthorDTO {
 
     private String nationality;
 
+    private boolean hasGames;
+
     /**
      * @return id
      */
@@ -56,5 +58,19 @@ public class AuthorDTO {
      */
     public void setNationality(String nationality) {
         this.nationality = nationality;
+    }
+
+    /**
+     * @return hasGames
+     */
+    public boolean getHasGames() {
+        return this.hasGames;
+    }
+
+    /**
+     * @param hasGames new value of {@link #getHasGames}.
+     */
+    public void setHasGames(boolean hasGames) {
+        this.hasGames = hasGames;
     }
 }
