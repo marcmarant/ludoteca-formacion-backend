@@ -144,6 +144,18 @@ public class LoanTest {
     }
 
     @Test
+    public void createALoanWithAnInvalidTimeIntervalShouldThrowIllegalArgumentException() {
+
+        LoanDTO dto = createLoanDto(null, EXISTS_GAME_ID, EXISTS_CLIENT_ID);
+        dto.setLoanDate(LOAN_DATE);
+        dto.setReturnDate(RETURN_DATE.plusDays(10));
+
+        assertThrows(IllegalArgumentException.class, () -> loanService.create(dto));
+
+        verify(loanRepository, never()).save(any(Loan.class));
+    }
+
+    @Test
     public void createALoanWithLoanDateAfterReturnDateShouldThrowIllegalArgumentException() {
 
         LoanDTO dto = createLoanDto(null, EXISTS_GAME_ID, EXISTS_CLIENT_ID);
@@ -242,6 +254,18 @@ public class LoanTest {
         LoanDTO dto = createLoanDto(EXISTS_LOAN_ID, EXISTS_GAME_ID, EXISTS_CLIENT_ID);
 
         assertThrows(GameNotAvailableToLoanException.class, () -> loanService.update(dto));
+
+        verify(loanRepository, never()).save(any(Loan.class));
+    }
+
+    @Test
+    public void updateALoanWithLoanWithAnInvalidTimeIntervalShouldThrowIllegalArgumentException() {
+
+        LoanDTO dto = createLoanDto(null, EXISTS_GAME_ID, EXISTS_CLIENT_ID);
+        dto.setLoanDate(LOAN_DATE);
+        dto.setReturnDate(RETURN_DATE.plusDays(10));
+
+        assertThrows(IllegalArgumentException.class, () -> loanService.update(dto));
 
         verify(loanRepository, never()).save(any(Loan.class));
     }

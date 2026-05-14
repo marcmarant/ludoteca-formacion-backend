@@ -1,11 +1,12 @@
-/*package com.ccsw.tutorial.loan;
+package com.ccsw.tutorial.loan;
 
-import com.ccsw.tutorial.author.model.AuthorDTO;
-import com.ccsw.tutorial.author.model.AuthorSearchDTO;
+import com.ccsw.tutorial.client.model.ClientDTO;
 import com.ccsw.tutorial.common.AbstractIT;
 import com.ccsw.tutorial.common.pagination.PageableRequest;
 import com.ccsw.tutorial.config.ResponsePage;
+import com.ccsw.tutorial.game.model.GameDTO;
 import com.ccsw.tutorial.loan.model.LoanDTO;
+import com.ccsw.tutorial.loan.model.LoanSearchDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
@@ -15,9 +16,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.util.List;
+import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -28,36 +30,25 @@ public class LoanIT extends AbstractIT {
     // Basado en java/resources/data.sql
     private static final int TOTAL_LOANS = 5;
     private static final Long EXISTS_LOAN_ID = 1L;
+    private static final Long DELETE_LOAN_ID = 2L;
     private static final Long NOT_EXISTS_LOAN_ID = 0L;
-    private static final int PAGE_SIZE = 5;
+    private static final Long GAME_ON_LOAN_ID = 1L;
+    private static final Long GAME_WITHOUT_LOANS_ID = 6L;
+    private static final Long CLIENT_WITH_LOANS_ID = 1L;
+    private static final Long CLIENT_WITHOUT_LOANS_ID = 3L;
 
-    ParameterizedTypeReference<ResponsePage<LoanDTO>> pageResponseType = new ParameterizedTypeReference<ResponsePage<LoanDTO>>() {};
-    ParameterizedTypeReference<List<LoanDTO>> listResponseType = new ParameterizedTypeReference<List<LoanDTO>>() {};
-    ParameterizedTypeReference<LoanDTO> loanResponseType = new ParameterizedTypeReference<LoanDTO>() {};
-
-    @Test
-    public void findAllShouldReturnAllAuthor() {
-
-        ResponseEntity<List<AuthorDTO>> response = restTemplate.exchange(
-                LOCALHOST + port + SERVICE_PATH,
-                HttpMethod.GET,
-                null,
-                listResponseType
-        );
-
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(TOTAL_AUTHORS, response.getBody().size());
-    }
+    private final ParameterizedTypeReference<ResponsePage<LoanDTO>> pageResponseType = new ParameterizedTypeReference<>() {};
 
     @Test
-    public void findFirstPageWithFiveSizeShouldReturnFirstFiveResults() {
+    public void findPageShouldReturnExpectedPage() {
 
-        AuthorSearchDTO searchDto = new AuthorSearchDTO();
-        searchDto.setPageable(new PageableRequest(0, PAGE_SIZE));
+        LoanSearchDTO searchDto = new LoanSearchDTO();
+        searchDto.setPageable(new PageableRequest(0, TOTAL_LOANS));
+        searchDto.setTitle("Mars");
+        searchDto.setClientId(CLIENT_WITH_LOANS_ID);
+        searchDto.setDate(LocalDate.of(2026, 4, 10));
 
-        ResponseEntity<ResponsePage<AuthorDTO>> response = restTemplate.exchange(
+        ResponseEntity<ResponsePage<LoanDTO>> response = restTemplate.exchange(
                 LOCALHOST + port + SERVICE_PATH + "/search",
                 HttpMethod.POST,
                 new HttpEntity<>(searchDto),
@@ -67,38 +58,18 @@ public class LoanIT extends AbstractIT {
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(TOTAL_AUTHORS, response.getBody().getTotalElements());
-        assertEquals(PAGE_SIZE, response.getBody().getContent().size());
+        assertEquals(1, response.getBody().getTotalElements());
+        assertEquals(1, response.getBody().getContent().size());
     }
 
     @Test
-    public void findSecondPageWithFiveSizeShouldReturnLastResult() {
-
-        int elementsCount = TOTAL_AUTHORS - PAGE_SIZE;
-
-        AuthorSearchDTO searchDto = new AuthorSearchDTO();
-        searchDto.setPageable(new PageableRequest(1, PAGE_SIZE));
-
-        ResponseEntity<ResponsePage<AuthorDTO>> response = restTemplate.exchange(
-                LOCALHOST + port + SERVICE_PATH + "/search",
-                HttpMethod.POST,
-                new HttpEntity<>(searchDto),
-                pageResponseType
+    public void createShouldCreateALoan() {
+        LoanDTO dto = createLoanDto(
+                GAME_WITHOUT_LOANS_ID,
+                CLIENT_WITHOUT_LOANS_ID,
+                LocalDate.of(2026, 4, 1),
+                LocalDate.of(2026, 4, 5)
         );
-
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(TOTAL_AUTHORS, response.getBody().getTotalElements());
-        assertEquals(elementsCount, response.getBody().getContent().size());
-    }
-
-    @Test
-    public void createShouldCreateANewAuthor() {
-
-        AuthorDTO dto = new AuthorDTO();
-        dto.setName("New Author");
-        dto.setNationality("ES");
 
         ResponseEntity<?> response = restTemplate.exchange(
                 LOCALHOST + port + SERVICE_PATH,
@@ -110,30 +81,31 @@ public class LoanIT extends AbstractIT {
         assertNotNull(response);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
-        ResponseEntity<List<AuthorDTO>> findAllResponse = restTemplate.exchange(
-                LOCALHOST + port + SERVICE_PATH,
-                HttpMethod.GET,
-                null,
-                listResponseType
+        ResponseEntity<ResponsePage<LoanDTO>> searchResponse = restTemplate.exchange(
+                LOCALHOST + port + SERVICE_PATH + "/search",
+                HttpMethod.POST,
+                new HttpEntity<>(buildSearchDto("Azul", CLIENT_WITHOUT_LOANS_ID, LocalDate.of(2026, 4, 1))),
+                pageResponseType
         );
 
-        assertNotNull(findAllResponse.getBody());
-        assertEquals(TOTAL_AUTHORS + 1, findAllResponse.getBody().size());
-        assertTrue(findAllResponse.getBody().stream().anyMatch(a -> "New Author".equals(a.getName()) && "ES".equals(a.getNationality())));
+        assertNotNull(searchResponse.getBody());
+        assertEquals(1, searchResponse.getBody().getTotalElements());
     }
 
     @Test
-    public void createWithAnEmptyNameShouldReturnBadRequest() {
-
-        AuthorDTO dto = new AuthorDTO();
-        dto.setName("");
-        dto.setNationality("ES");
+    public void createALoanWithAGameAlreadyOnLoanShouldReturnBadRequest() {
+        LoanDTO dto = createLoanDto(
+                GAME_ON_LOAN_ID,
+                CLIENT_WITHOUT_LOANS_ID,
+                LocalDate.of(2026, 4, 15),
+                LocalDate.of(2026, 4, 16)
+        );
 
         ResponseEntity<?> response = restTemplate.exchange(
                 LOCALHOST + port + SERVICE_PATH,
                 HttpMethod.POST,
                 buildAuthEntity(dto),
-                Void.class
+                String.class
         );
 
         assertNotNull(response);
@@ -141,14 +113,56 @@ public class LoanIT extends AbstractIT {
     }
 
     @Test
-    public void updateShouldReplaceAnExistingAuthor() {
-
-        AuthorDTO dto = new AuthorDTO();
-        dto.setName("Updated Author");
-        dto.setNationality("FR");
+    public void createALoanWithAnInvalidTimeIntervalShouldReturnBadRequest() {
+        LoanDTO dto = createLoanDto(
+                GAME_WITHOUT_LOANS_ID,
+                CLIENT_WITHOUT_LOANS_ID,
+                LocalDate.of(2026, 4, 1),
+                LocalDate.of(2026, 4, 20)
+        );
 
         ResponseEntity<?> response = restTemplate.exchange(
-                LOCALHOST + port + SERVICE_PATH + "/" + NOT_REFERENCED_AUTHOR_ID,
+                LOCALHOST + port + SERVICE_PATH,
+                HttpMethod.POST,
+                buildAuthEntity(dto),
+                String.class
+        );
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void createALoanWithLoanDateAfterReturnDateShouldReturnBadRequest() {
+        LoanDTO dto = createLoanDto(
+                GAME_WITHOUT_LOANS_ID,
+                CLIENT_WITHOUT_LOANS_ID,
+                LocalDate.of(2026, 4, 20),
+                LocalDate.of(2026, 4, 10)
+        );
+
+        ResponseEntity<?> response = restTemplate.exchange(
+                LOCALHOST + port + SERVICE_PATH,
+                HttpMethod.POST,
+                buildAuthEntity(dto),
+                String.class
+        );
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void updateShouldReplaceExpectedLoan() {
+        LoanDTO dto = createLoanDto(
+                GAME_WITHOUT_LOANS_ID,
+                CLIENT_WITHOUT_LOANS_ID,
+                LocalDate.of(2026, 4, 1),
+                LocalDate.of(2026, 4, 5)
+        );
+
+        ResponseEntity<?> response = restTemplate.exchange(
+                LOCALHOST + port + SERVICE_PATH + "/" + EXISTS_LOAN_ID,
                 HttpMethod.PUT,
                 buildAuthEntity(dto),
                 Void.class
@@ -157,32 +171,31 @@ public class LoanIT extends AbstractIT {
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
-        ResponseEntity<AuthorDTO> findByIdResponse = restTemplate.exchange(
-                LOCALHOST + port + SERVICE_PATH + "/" + NOT_REFERENCED_AUTHOR_ID,
-                HttpMethod.GET,
-                null,
-                authorResponseType
+        ResponseEntity<ResponsePage<LoanDTO>> searchResponse = restTemplate.exchange(
+                LOCALHOST + port + SERVICE_PATH + "/search",
+                HttpMethod.POST,
+                new HttpEntity<>(buildSearchDto("Azul", CLIENT_WITHOUT_LOANS_ID, LocalDate.of(2026, 4, 1))),
+                pageResponseType
         );
 
-        assertNotNull(findByIdResponse);
-        assertEquals(HttpStatus.OK, findByIdResponse.getStatusCode());
-        assertNotNull(findByIdResponse.getBody());
-        assertEquals("Updated Author", findByIdResponse.getBody().getName());
-        assertEquals("FR", findByIdResponse.getBody().getNationality());
+        assertNotNull(searchResponse.getBody());
+        assertEquals(1, searchResponse.getBody().getTotalElements());
     }
 
     @Test
-    public void updateWithNonExistentIdShouldReturnNotFound() {
-
-        AuthorDTO dto = new AuthorDTO();
-        dto.setName("Updated Author");
-        dto.setNationality("FR");
+    public void updateNoExistentLoanShouldReturnNotFound() {
+        LoanDTO dto = createLoanDto(
+                GAME_WITHOUT_LOANS_ID,
+                CLIENT_WITHOUT_LOANS_ID,
+                LocalDate.of(2026, 4, 1),
+                LocalDate.of(2026, 4, 5)
+        );
 
         ResponseEntity<?> response = restTemplate.exchange(
-                LOCALHOST + port + SERVICE_PATH + "/" + NOT_EXISTS_AUTHOR_ID,
+                LOCALHOST + port + SERVICE_PATH + "/" + NOT_EXISTS_LOAN_ID,
                 HttpMethod.PUT,
                 buildAuthEntity(dto),
-                Void.class
+                String.class
         );
 
         assertNotNull(response);
@@ -190,17 +203,19 @@ public class LoanIT extends AbstractIT {
     }
 
     @Test
-    public void updateWithAnEmptyNameShouldReturnBadRequest() {
-
-        AuthorDTO dto = new AuthorDTO();
-        dto.setName("");
-        dto.setNationality("FR");
+    public void updateALoanWithAGameAlreadyOnLoanShouldReturnBadRequest() {
+        LoanDTO dto = createLoanDto(
+                GAME_ON_LOAN_ID,
+                CLIENT_WITH_LOANS_ID,
+                LocalDate.of(2026, 4, 25),
+                LocalDate.of(2026, 4, 30)
+        );
 
         ResponseEntity<?> response = restTemplate.exchange(
-                LOCALHOST + port + SERVICE_PATH + "/" + NOT_REFERENCED_AUTHOR_ID,
+                LOCALHOST + port + SERVICE_PATH + "/" + EXISTS_LOAN_ID,
                 HttpMethod.PUT,
                 buildAuthEntity(dto),
-                Void.class
+                String.class
         );
 
         assertNotNull(response);
@@ -208,39 +223,51 @@ public class LoanIT extends AbstractIT {
     }
 
     @Test
-    public void findByIdShouldReturnExpectedAuthor() {
+    public void updateALoanWithAnInvalidTimeIntervalShouldReturnBadRequest() {
 
-        ResponseEntity<AuthorDTO> response = restTemplate.exchange(
-                LOCALHOST + port + SERVICE_PATH + "/" + NOT_REFERENCED_AUTHOR_ID,
-                HttpMethod.GET,
-                null,
-                authorResponseType
+        LoanDTO dto = createLoanDto(
+                GAME_WITHOUT_LOANS_ID,
+                CLIENT_WITHOUT_LOANS_ID,
+                LocalDate.of(2026, 4, 1),
+                LocalDate.of(2026, 4, 20)
         );
-
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(NOT_REFERENCED_AUTHOR_ID, response.getBody().getId());
-    }
-
-    @Test
-    public void findByNonExistentIdShouldReturnNotFoundError() {
-
-        ResponseEntity<AuthorDTO> response = restTemplate.exchange(
-                LOCALHOST + port + SERVICE_PATH + "/" + NOT_EXISTS_AUTHOR_ID,
-                HttpMethod.GET,
-                null,
-                authorResponseType
-        );
-
-        assertNotNull(response);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    }
-
-    @Test
-    public void deleteAuthorShouldDeleteExpectedAuthor() {
 
         ResponseEntity<?> response = restTemplate.exchange(
-                LOCALHOST + port + SERVICE_PATH + "/" + NOT_REFERENCED_AUTHOR_ID,
+                LOCALHOST + port + SERVICE_PATH + "/" + EXISTS_LOAN_ID,
+                HttpMethod.PUT,
+                buildAuthEntity(dto),
+                String.class
+        );
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void updateALoanWithLoanDateAfterReturnDateShouldReturnBadRequest() {
+        LoanDTO dto = createLoanDto(
+                GAME_WITHOUT_LOANS_ID,
+                CLIENT_WITHOUT_LOANS_ID,
+                LocalDate.of(2026, 4, 20),
+                LocalDate.of(2026, 4, 10)
+        );
+
+        ResponseEntity<?> response = restTemplate.exchange(
+                LOCALHOST + port + SERVICE_PATH + "/" + EXISTS_LOAN_ID,
+                HttpMethod.PUT,
+                buildAuthEntity(dto),
+                String.class
+        );
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void deleteShouldDeleteExpectedLoan() {
+
+        ResponseEntity<?> response = restTemplate.exchange(
+                LOCALHOST + port + SERVICE_PATH + "/" + DELETE_LOAN_ID,
                 HttpMethod.DELETE,
                 buildAuthEntity(),
                 Void.class
@@ -249,43 +276,53 @@ public class LoanIT extends AbstractIT {
         assertNotNull(response);
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
 
-        ResponseEntity<AuthorDTO> findByIdResponse = restTemplate.exchange(
-                LOCALHOST + port + SERVICE_PATH + "/" + NOT_REFERENCED_AUTHOR_ID,
-                HttpMethod.GET,
-                null,
-                authorResponseType
+        ResponseEntity<ResponsePage<LoanDTO>> searchResponse = restTemplate.exchange(
+                LOCALHOST + port + SERVICE_PATH + "/search",
+                HttpMethod.POST,
+                new HttpEntity<>(buildSearchDto("Aventureros al tren", CLIENT_WITH_LOANS_ID, LocalDate.of(2026, 4, 12))),
+                pageResponseType
         );
 
-        assertNotNull(response);
-        assertEquals(HttpStatus.NOT_FOUND, findByIdResponse.getStatusCode());
+        assertNotNull(searchResponse.getBody());
+        assertEquals(0, searchResponse.getBody().getTotalElements());
     }
 
     @Test
-    public void deleteNonExistentAuthorShouldReturnNotFoundError() {
+    public void deleteNonExistentLoanShouldReturnNotFound() {
 
         ResponseEntity<?> response = restTemplate.exchange(
-                LOCALHOST + port + SERVICE_PATH + "/" + NOT_EXISTS_AUTHOR_ID,
+                LOCALHOST + port + SERVICE_PATH + "/" + NOT_EXISTS_LOAN_ID,
                 HttpMethod.DELETE,
                 buildAuthEntity(),
-                Void.class
+                String.class
         );
 
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
-    @Test
-    public void deleteReferencedAuthorShouldReturnConflictError() {
+    private LoanDTO createLoanDto(Long gameId, Long clientId, LocalDate loanDate, LocalDate returnDate) {
+        LoanDTO dto = new LoanDTO();
+        dto.setLoanDate(loanDate);
+        dto.setReturnDate(returnDate);
 
-        ResponseEntity<?> response = restTemplate.exchange(
-                LOCALHOST + port + SERVICE_PATH + "/" + GAME_REFERENCED_AUTHOR_ID,
-                HttpMethod.DELETE,
-                buildAuthEntity(),
-                Void.class
-        );
+        GameDTO gameDto = new GameDTO();
+        gameDto.setId(gameId);
+        dto.setGame(gameDto);
 
-        assertNotNull(response);
-        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        ClientDTO clientDto = new ClientDTO();
+        clientDto.setId(clientId);
+        dto.setClient(clientDto);
+
+        return dto;
     }
 
-}*/
+    private LoanSearchDTO buildSearchDto(String title, Long clientId, LocalDate date) {
+        LoanSearchDTO searchDto = new LoanSearchDTO();
+        searchDto.setPageable(new PageableRequest(0, TOTAL_LOANS));
+        searchDto.setTitle(title);
+        searchDto.setClientId(clientId);
+        searchDto.setDate(date);
+        return searchDto;
+    }
+}

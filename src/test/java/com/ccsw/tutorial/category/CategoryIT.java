@@ -52,7 +52,12 @@ public class CategoryIT extends AbstractIT {
     @Test
     public void findByIdShouldReturnSpecificCategory() {
 
-        ResponseEntity<CategoryDTO> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH + "/1", HttpMethod.GET, null, categoryResponseType);
+        ResponseEntity<CategoryDTO> response = restTemplate.exchange(
+                LOCALHOST + port + SERVICE_PATH + "/1",
+                HttpMethod.GET,
+                null,
+                categoryResponseType
+        );
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
