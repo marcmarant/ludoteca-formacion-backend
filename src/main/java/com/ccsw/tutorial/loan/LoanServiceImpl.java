@@ -40,8 +40,9 @@ public class LoanServiceImpl implements LoanService {
 
         LoanSpecification titleSpec = new LoanSpecification(new SearchCriteria("game.title", ":", dto.getTitle()));
         LoanSpecification clientSpec = new LoanSpecification(new SearchCriteria("client.id", ":", dto.getClientId()));
-        LoanSpecification dateSpec = new LoanSpecification(new SearchCriteria("loanDate", ":", dto.getDate()));
-        Specification<Loan> specification = titleSpec.and(clientSpec).and(dateSpec);
+        LoanSpecification greaterDateSpec = new LoanSpecification(new SearchCriteria("loanDate", "<=", dto.getDate()));
+        LoanSpecification previousDateSpec = new LoanSpecification(new SearchCriteria("returnDate", ">=", dto.getDate()));
+        Specification<Loan> specification = titleSpec.and(clientSpec).and(greaterDateSpec).and(previousDateSpec);
 
         return this.loanRepository.findAll(specification, dto.getPageable().getPageable());
     }
